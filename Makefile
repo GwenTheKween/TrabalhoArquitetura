@@ -1,6 +1,6 @@
 COMP = g++
 COMP_FLAGS = -c -g
-LINK_FLAGS = -lncurses -o
+LINK_FLAGS = -lpanel -lncurses -o
 EXE = scoreboarding.out
 SRC = $(wildcard *.cpp)
 OBJS = $(SRC:.cpp=.o)
