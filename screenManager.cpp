@@ -15,11 +15,9 @@ screenManager::~screenManager(){
 	endwin();
 }
 
-int screenManager::register_new_panel(){
-	//FIRST TEST
-	//I will probably not work correctly at first, many stuffs to fix
+int screenManager::register_new_panel(int posX, int posY,int wid, int hei){
 	WINDOW* new_window;
-	new_window = newwin(height, width, 0,0);
+	new_window = newwin(hei, wid, posY, posX);
 	keypad(new_window, true);
 	windows[curr_id] = new_window;
 	box(new_window, 0, 0);
@@ -37,7 +35,7 @@ void screenManager::print_to_panel(int id, const char* fmt, ...){
 	}else{
 		//if not, check if ID is valid
 		if(windows[id]){
-			wprintw(windows[id],fmt,arg);
+			mvwprintw(windows[id], 1, 1, fmt, arg);
 		}
 	}
 

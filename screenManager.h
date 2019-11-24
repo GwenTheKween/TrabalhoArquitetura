@@ -17,7 +17,7 @@ public:
 	screenManager();
 	~screenManager();
 
-	int register_new_panel();
+	int register_new_panel(int posX, int posY, int wid = 20, int hei=10);
 	//print_to_panel works the same way as printf functions
 	void print_to_panel(int id, const char* fmt, ...) __attribute__((format(printf, 3,4)));
 
