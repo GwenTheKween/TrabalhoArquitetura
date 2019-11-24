@@ -1,6 +1,5 @@
 #include "screenManager.h"
 
-
 screenManager::screenManager():
 	curr_id(0){
 	initscr();
@@ -17,13 +16,27 @@ screenManager::~screenManager(){
 
 int screenManager::register_new_panel(int posX, int posY,int wid, int hei){
 	WINDOW* new_window;
+	panelStruct pan;
+
+	//create new ncurses window
 	new_window = newwin(hei, wid, posY, posX);
 	keypad(new_window, true);
-	windows[curr_id] = new_window;
 	box(new_window, 0, 0);
-	panels[curr_id] = new_panel(new_window);
+
+	//set struct data
+	pan.win = new_window;
+	pan.pan = new_panel(new_window);
+	pan.width = wid;
+	pan.height = hei;
+	pan.posX = posX;
+	pan.posY = posY;
+
+	//save data to unordered map
+	panels[curr_id] = pan;
+	//update the screen
 	doupdate();
 
+	//return panel id
 	return curr_id++;
 }
 
@@ -34,8 +47,8 @@ void screenManager::print_to_panel(int id, const char* fmt, ...){
 		wprintw(stdscr, fmt, arg);
 	}else{
 		//if not, check if ID is valid
-		if(windows[id]){
-			mvwprintw(windows[id], 1, 1, fmt, arg);
+		if(panels[id].win){
+			mvwprintw(panels[id].win, 1, 1, fmt, arg);
 		}
 	}
 
@@ -45,17 +58,19 @@ void screenManager::print_to_panel(int id, const char* fmt, ...){
 
 void screenManager::removePanel(int id){
 	//delete panel
-	del_panel(panels[id]);
+	del_panel(panels[id].pan);
 
 	//delete window border
-	wborder(windows[id],' ',' ',' ',' ',' ',' ',' ',' ');
+	wborder(panels[id].win,' ',' ',' ',' ',' ',' ',' ',' ');
 	update_panels();
 	doupdate();
 	//delete window itself
-	delwin(windows[id]);
+	delwin(panels[id].win);
+
+	//set all the info to 0
+	memset(&panels[id],0,sizeof(panelStruct));
 
 	panels.erase(id);
-	windows.erase(id);
 }
 
 void screenManager::clear(){

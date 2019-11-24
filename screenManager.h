@@ -7,10 +7,17 @@
 #include <unordered_map>
 #include <stdarg.h>
 
+#include <string.h> //used for memset
+
+typedef struct{
+	WINDOW* win;
+	PANEL* pan;
+	int width, height, posX, posY;
+} panelStruct;
+
 class screenManager{
 private:
-	std::unordered_map<int, WINDOW*> windows;
-	std::unordered_map<int, PANEL*> panels;
+	std::unordered_map<int, panelStruct> panels;
 
 	int width, height, curr_id;
 public:
