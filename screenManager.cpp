@@ -10,6 +10,7 @@ screenManager::screenManager(){
 }
 
 screenManager::~screenManager(){
+	clear();
 	endwin();
 }
 
@@ -20,7 +21,7 @@ int screenManager::register_new_panel(){
 	new_window = newwin(height, width, 0,0);
 	keypad(new_window, true);
 	windows.push_back(new_window);
-	//box(new_window, 0, 0);
+	box(new_window, 0, 0);
 	panels.push_back(new_panel(new_window));
 	doupdate();
 	return windows.size()-1;
@@ -39,4 +40,26 @@ void screenManager::print_to_panel(int id, const char* fmt, ...){
 
 	update_panels();
 	doupdate();
+}
+
+void screenManager::removePanel(int position){
+	//delete panel
+	del_panel(panels[position]);
+
+	//delete window border
+	wborder(windows[position],' ',' ',' ',' ',' ',' ',' ',' ');
+	update_panels();
+	doupdate();
+	//delete window itself
+	delwin(windows[position]);
+
+	//possibly remove references?
+	panels[position] = NULL;
+	windows[position] = NULL;
+}
+
+void screenManager::clear(){
+	while(!panels.empty()){
+		removePanel(panels.size() - 1);
+	}
 }
