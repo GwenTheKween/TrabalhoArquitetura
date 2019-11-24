@@ -1,7 +1,8 @@
 #include "screenManager.h"
 
 
-screenManager::screenManager(){
+screenManager::screenManager():
+	curr_id(0){
 	initscr();
 	cbreak();
 	raw();
@@ -20,42 +21,43 @@ int screenManager::register_new_panel(){
 	WINDOW* new_window;
 	new_window = newwin(height, width, 0,0);
 	keypad(new_window, true);
-	windows.push_back(new_window);
+	windows[curr_id] = new_window;
 	box(new_window, 0, 0);
-	panels.push_back(new_panel(new_window));
+	panels[curr_id] = new_panel(new_window);
 	doupdate();
-	return windows.size()-1;
+
+	return curr_id++;
 }
 
 void screenManager::print_to_panel(int id, const char* fmt, ...){
 	va_list arg;
-	if(id >= panels.size()){
-		return;
-	}
+	//first check if id is stdscr
 	if(id < 0){
 		wprintw(stdscr, fmt, arg);
 	}else{
-		wprintw(windows[id],fmt,arg);
+		//if not, check if ID is valid
+		if(windows[id]){
+			wprintw(windows[id],fmt,arg);
+		}
 	}
 
 	update_panels();
 	doupdate();
 }
 
-void screenManager::removePanel(int position){
+void screenManager::removePanel(int id){
 	//delete panel
-	del_panel(panels[position]);
+	del_panel(panels[id]);
 
 	//delete window border
-	wborder(windows[position],' ',' ',' ',' ',' ',' ',' ',' ');
+	wborder(windows[id],' ',' ',' ',' ',' ',' ',' ',' ');
 	update_panels();
 	doupdate();
 	//delete window itself
-	delwin(windows[position]);
+	delwin(windows[id]);
 
-	//possibly remove references?
-	panels[position] = NULL;
-	windows[position] = NULL;
+	panels.erase(id);
+	windows.erase(id);
 }
 
 void screenManager::clear(){

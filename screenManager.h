@@ -4,15 +4,15 @@
 #include <stdio.h>
 #include <ncurses.h>
 #include <panel.h>
-#include <vector>
+#include <unordered_map>
 #include <stdarg.h>
 
 class screenManager{
 private:
-	std::vector<WINDOW*> windows;
-	std::vector<PANEL*> panels;
+	std::unordered_map<int, WINDOW*> windows;
+	std::unordered_map<int, PANEL*> panels;
 
-	int width, height;
+	int width, height, curr_id;
 public:
 	screenManager();
 	~screenManager();
@@ -22,7 +22,7 @@ public:
 	void print_to_panel(int id, const char* fmt, ...) __attribute__((format(printf, 3,4)));
 
 	//remove a single panel
-	void removePanel(int position);
+	void removePanel(int id);
 	//clear all panels and windows
 	void clear();
 };
