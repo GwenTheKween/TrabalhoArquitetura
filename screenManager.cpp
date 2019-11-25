@@ -5,6 +5,7 @@ screenManager::screenManager():
 	initscr();
 	cbreak();
 	raw();
+	noecho();
 	keypad(stdscr, true);
 	getmaxyx(stdscr, height, width);
 }
@@ -41,14 +42,16 @@ int screenManager::register_new_panel(int posX, int posY,int wid, int hei){
 }
 
 void screenManager::print_to_panel(int id, const char* fmt, ...){
+	//TO DO: FIX VA LIST NOT WORKING PROPERLY 
 	va_list arg;
+	va_start(arg,fmt);
 	//first check if id is stdscr
 	if(id < 0){
-		wprintw(stdscr, fmt, arg);
+		vwprintw(stdscr, fmt, arg);
 	}else{
 		//if not, check if ID is valid
 		if(panels[id].win){
-			mvwprintw(panels[id].win, 1, 1, fmt, arg);
+			vwprintw(panels[id].win, fmt, arg);
 		}
 	}
 
