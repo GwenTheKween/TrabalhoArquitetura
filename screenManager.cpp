@@ -42,7 +42,6 @@ int screenManager::register_new_panel(int posX, int posY,int wid, int hei){
 }
 
 void screenManager::print_to_panel(int id, const char* fmt, ...){
-	//TO DO: FIX VA LIST NOT WORKING PROPERLY 
 	va_list arg;
 	va_start(arg,fmt);
 	//first check if id is stdscr
@@ -53,6 +52,21 @@ void screenManager::print_to_panel(int id, const char* fmt, ...){
 		if(panels[id].win){
 			vwprintw(panels[id].win, fmt, arg);
 		}
+	}
+
+	update_panels();
+	doupdate();
+}
+
+void screenManager::mvprint_to_panel(int id, int y, int x, const char* fmt, ...){
+	va_list arg;
+	va_start(arg, fmt);
+	if(id < 0){
+		move(y,x);
+		vwprintw(stdscr, fmt, arg);
+	}else{
+		wmove(panels[id].win,y,x);
+		vwprintw(panels[id].win, fmt, arg);
 	}
 
 	update_panels();

@@ -27,6 +27,7 @@ public:
 	int register_new_panel(int posX, int posY, int wid = 20, int hei=10);
 	//print_to_panel works the same way as printf functions
 	void print_to_panel(int id, const char* fmt, ...) __attribute__((format(printf, 3,4)));
+	void mvprint_to_panel(int id, int y, int x, const char* fmt, ...) __attribute__((format(printf, 5,6)));
 
 	//remove a single panel
 	void removePanel(int id);
