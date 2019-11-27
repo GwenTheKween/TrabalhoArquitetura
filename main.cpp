@@ -4,8 +4,10 @@
 screenManager sm;
 
 int main(){
-	int i = sm.register_new_panel(0,0);
-	sm.print_to_panel(i,"number %d and %f",3, 42.1);
+	int i = sm.register_new_panel(0,0, 40, 20);
+	sm.mvprint_to_panel(i,1,1,"UF\t|ocupado");
+	sm.mvprint_to_panel(i,2,1,"----------------------");
+	sm.mvprint_to_panel(i,3,1,"ULA\t| X");
 	getch();
 	return 0;
 }
