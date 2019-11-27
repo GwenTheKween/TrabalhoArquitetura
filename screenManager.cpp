@@ -8,6 +8,17 @@ screenManager::screenManager():
 	noecho();
 	keypad(stdscr, true);
 	getmaxyx(stdscr, height, width);
+
+	//creating stdscr panel, to ease logic on printing functions
+	panelStruct std;
+	std.win = stdscr;
+	std.pan = NULL;
+	std.width = width;
+	std.height = height;
+	std.posX = 0;
+	std.posY = 0;
+
+	panels[-1] = std;
 }
 
 screenManager::~screenManager(){
@@ -44,14 +55,9 @@ int screenManager::register_new_panel(int posX, int posY,int wid, int hei){
 void screenManager::print_to_panel(int id, const char* fmt, ...){
 	va_list arg;
 	va_start(arg,fmt);
-	//first check if id is stdscr
-	if(id < 0){
-		vwprintw(stdscr, fmt, arg);
-	}else{
-		//if not, check if ID is valid
-		if(panels[id].win){
-			vwprintw(panels[id].win, fmt, arg);
-		}
+	//if not, check if ID is valid
+	if(panels[id].win){
+		vwprintw(panels[id].win, fmt, arg);
 	}
 
 	update_panels();
@@ -61,10 +67,7 @@ void screenManager::print_to_panel(int id, const char* fmt, ...){
 void screenManager::mvprint_to_panel(int id, int y, int x, const char* fmt, ...){
 	va_list arg;
 	va_start(arg, fmt);
-	if(id < 0){
-		move(y,x);
-		vwprintw(stdscr, fmt, arg);
-	}else{
+	if(panels[id].win){
 		wmove(panels[id].win,y,x);
 		vwprintw(panels[id].win, fmt, arg);
 	}

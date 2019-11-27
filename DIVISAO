@@ -1,0 +1,13 @@
+4 componentes principais:
+
+PIPELINE:
+	Controle da tabela indicando o ciclo de clock que cada estagio do pipeline ocorreu para cada instrução
+
+CONTROLE DE DESPACHO:
+	Controla se alguma instrução pode ser despachada, e ajeita cada valor nos outros componentes
+
+UNIDADES FUNCIONAIS:
+	Controla leitura de operandos, operação em si, e escrita dos resultados
+
+BANCO DE REGISTRADORES:
+	Implementa a memoria e os registradores.
