@@ -9,7 +9,7 @@ class RegResController{
 private:
 	//will map register to uf using it
 	std::unordered_map <std::string, std::string> registers;	
-
+	//the dispatch will have to check availability first so no conflict happens because of the writeback
 public:
 	//precisa definir um valor que permita reconhecer que esta livre
 	
