@@ -19,6 +19,8 @@ screenManager::screenManager():
 	std.posY = 0;
 
 	panels[-1] = std;
+
+	ids.push_back(-1);
 }
 
 screenManager::~screenManager(){
@@ -48,6 +50,8 @@ int screenManager::register_new_panel(int posX, int posY,int wid, int hei){
 	//update the screen
 	doupdate();
 
+	//add current id as a used ID
+	ids.push_back(curr_id);
 	//return panel id
 	return curr_id++;
 }
@@ -90,11 +94,17 @@ void screenManager::removePanel(int id){
 	//set all the info to 0
 	memset(&panels[id],0,sizeof(panelStruct));
 
+	for(std::vector<int>::iterator it=ids.begin();it!=ids.end(); it++){
+		if(*it == id){
+			ids.erase(it);
+			break;
+		}
+	}
 	panels.erase(id);
 }
 
 void screenManager::clear(){
-	while(!panels.empty()){
-		removePanel(panels.size() - 1);
+	for(int i=0;i<ids.size(); i++){
+		removePanel(ids[i]);
 	}
 }
