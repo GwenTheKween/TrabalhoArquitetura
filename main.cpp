@@ -33,6 +33,10 @@ int main(){
 	//tabela em si
 	tableManager<int> tm(0,0,col,lin,"d",d);
 
+	getch();
+
+	tm.update_line(0,"R0", v);
+
 	//aguarda digitar um caracter, para poder ver o q esta acontecendo
 	getch();
 	return 0;

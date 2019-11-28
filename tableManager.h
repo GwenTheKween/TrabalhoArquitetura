@@ -25,6 +25,11 @@ public:
 
 	//the destructor
 	~tableManager();
+
+	//method used for updating a specific line of a table
+	void update_line(int line, //number of the line to be updated. line is calculated without the header or separators
+				std::string lineName, //name of the line. Needs to be resent because the class doesn't store it
+				std::vector<T> d); //the data to be printed;
 };
 
 /*
@@ -93,8 +98,15 @@ template<class T> tableManager<T>::~tableManager(){
 	panel = 0;
 }
 
-/*
-template<class T> tableManager<T>::print_line(int lineNum){
-	if(
+template<class T> void tableManager<T>::update_line(int line, std::string lineName, std::vector<T> d){
+	std::stringstream ss;
+	ss.width(columnWidths[0]);
+	ss << lineName;
+	for(int i = 1; i<columnWidths.size(); i++){
+		ss << '|';
+		ss.width(columnWidths[i]);
+		ss << d[i-1];
+	}
+	line = 2*line + 3; //convert to internal line number
+	sm.mvprint_to_panel(panel, line, 1, ss.str().c_str());
 }
-*/
