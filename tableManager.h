@@ -2,7 +2,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <iomanip>
+#include <sstream>
+//#include <iomanip>
 
 //The implementation of the methods MUST BE DONE in this file, because of template classes' restriction
 
@@ -40,7 +41,7 @@ template<class T> tableManager<T>::tableManager(
 
 	//the first thing to be done is creating the panel that will hold the table
 	//we can calculate the height and width needed for the panel in the following way:
-	int height = d.size() + 2; //amount of lines to be printed + 2 because of the panel border
+	int height = 2*lineNames.size() + 3; //for every line containing data, there's one line separator. Besides it needs a header line and 2 for the border
 	int width = 1; //we start at 1 to account for the border
 	for(int i = 0; i < columnNames.size(); i++){
 		width += columnNames[i].length() + 1; //the length of each column and the separator
@@ -68,10 +69,10 @@ template<class T> tableManager<T>::tableManager(
 	}
 
 	//Finally, we format the rest of the lines of the table, and print them as the are finished
-	std::stringstream ss;
 	for(int i=0; i<lineNames.size(); i++){
+		std::stringstream ss;
 		//we print the line separator at the begining of the loop to ease the formatting
-		sm.mvprint_to_panel(panel, 2*i + 1, 1, s.c_str());
+		sm.mvprint_to_panel(panel, 2*i + 2, 1, s.c_str());
 		//now we start to format the actual data.
 		ss.width(columnWidths[0]);
 		ss << lineNames[i];
@@ -81,7 +82,7 @@ template<class T> tableManager<T>::tableManager(
 			ss.width(columnWidths[j]);
 			ss << d[i][j-1];
 		}
-		sm.mvprint_to_panel(panel, 2*(i+1), 1, ss.str().c_str());
+		sm.mvprint_to_panel(panel, 2*i + 3, 1, ss.str().c_str());
 	}
 
 }
