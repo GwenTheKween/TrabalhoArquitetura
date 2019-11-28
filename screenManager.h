@@ -6,8 +6,10 @@
 #include <panel.h>
 #include <unordered_map>
 #include <stdarg.h>
+#include <vector>
 
 #include <string.h> //used for memset
+
 
 typedef struct{
 	WINDOW* win;
@@ -18,6 +20,7 @@ typedef struct{
 class screenManager{
 private:
 	std::unordered_map<int, panelStruct> panels;
+	std::vector<int> ids;
 
 	int width, height, curr_id;
 public:
@@ -34,5 +37,7 @@ public:
 	//clear all panels and windows
 	void clear();
 };
+
+extern screenManager sm;
 
 #endif //SCREEN_MANAGER_API
