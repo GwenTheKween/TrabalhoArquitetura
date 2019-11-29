@@ -10,6 +10,8 @@ typedef struct{
 	bool busy, next_busy;
 } ufLine;
 
+struct instruction;
+
 class UfController{
 
 private:
@@ -21,8 +23,11 @@ private:
 public:
 	UfController();
 	
-	//returns false if no uf is available for the informed operation otherwise returns true
-	bool populateUf(std::string opName);
+	//checks if a compatible fu is available
+	bool hasUfAvailable(bool needsFloatingPointUf);
+
+	//returns ufName - the name of the chosen fu
+	std::string populateUf(instruction dispatchedInstruction);
 	
 	//returns false if operands not ready otherwise returns true
 	bool readOperands(int instructionId, std::string opName); //alguma ideia melhor? precisa identificar a instrucao de alguma forma... talvez so id
