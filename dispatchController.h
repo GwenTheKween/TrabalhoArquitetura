@@ -6,18 +6,16 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include "screenManager.h"
+#include "regResultController.h"
+#include "pipelineController.h"
+#include "ufController.h"
 
 struct instruction{
 	std::string opName, rs, rt, rd;
 	int immed, id;
 	bool useFp, isRtype;
 };
-
-#include "screenManager.h"
-#include "regResultController.h"
-#include "pipelineController.h"
-#include "ufController.h"
-
 
 class DispatchController{
 	
