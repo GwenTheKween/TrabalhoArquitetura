@@ -8,7 +8,7 @@ using namespace std;
 
 int main(){
 	
-	DispatchController dc = 
+	DispatchController dc;
 
 
 	return 0;

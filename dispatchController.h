@@ -10,12 +10,7 @@
 #include "regResultController.h"
 #include "pipelineController.h"
 #include "ufController.h"
-
-struct instruction{
-	std::string opName, rs, rt, rd;
-	int immed, id;
-	bool useFp, isRtype;
-};
+#include "instructionStruct.h"
 
 class DispatchController{
 	

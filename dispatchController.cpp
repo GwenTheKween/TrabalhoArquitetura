@@ -11,7 +11,7 @@ DispatchController::DispatchController(){
 void DispatchController::loadInstructions(){
 
 	string value1, value2, value3, value4;
-	ifstream inputFile("instruction.sbd");
+	ifstream inputFile("instructions.sbd");
 	
 	vector< unordered_map<string, string> > instructionsMaps;
 	instructionsMaps = createInstructionsMaps();
@@ -53,7 +53,6 @@ void DispatchController::loadInstructions(){
 		//add to queue
 		instructionQueue.push(newInstruction);
 	}
-
 }
 
 int DispatchController::tryToDispatchNext(UfController ufCon, PipelineController pipe, RegResController regCon, int clockCycle){

@@ -3,14 +3,13 @@
 
 #include <vector>
 #include <string>
+#include "instructionStruct.h"
 
 typedef struct{
 	std::string ufName, opName, fi, fj, qj, next_qj, qk, next_qk;
 	int rj, next_rj, rk, next_rk, instructionId;
 	bool busy, next_busy;
 } ufLine;
-
-struct instruction;
 
 class UfController{
 
