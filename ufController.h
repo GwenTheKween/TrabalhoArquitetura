@@ -35,8 +35,11 @@ public:
 	bool runExecution(int instructionId, std::string opName);
 
 	//returns false if the informed register is still waiting to be read by a UF otherwise returns true
-	bool isWriteAvailable(std::string regName);
+	bool isWriteAvailable(int instructionId, std::string opName);
 	
+	//returns the name of the destination register	
+	std::string getDestReg(int instructionId, std::string opName);
+
 	//will change UF's status and update UFs waiting to read register
 	void clearAndUpdateUf(int instructionId, std::string opName, std::string regName);
 	

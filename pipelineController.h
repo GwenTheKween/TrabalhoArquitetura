@@ -10,6 +10,8 @@ typedef struct{
 	int instructionId;
 	std::string opName;
 	int stage[4];	//clock cicle for each stage(dispatch, readOp, exec, writeBack)
+	int currStage, execEnd;
+	bool finishedExec;
 } pipeLine; 	//line of the pipeline :)
 
 class PipelineController{
@@ -26,17 +28,17 @@ public:
 	void dispatchInstruction(int instructionId, std::string opName, int clockCycle);
 
 	//calls ufController method to read operands. Updates pipeline and window?
-	void tryToReadOperands(UfController ufCon, pipeLine line, int clockCycle);
+	void tryToReadOperands(UfController ufCon, pipeLine &line, int clockCycle);
 
 	//calls ufController method to run execution. Updates pipeline and window
-	void runExecution(UfController ufCon, pipeLine line, int clockCycle);
+	void runExecution(UfController ufCon, pipeLine &line, int clockCycle);
 	
 	//calls ufController method to check if write is available and if it is
 	//will update pipeline and call register result method to update register 
-	void tryToWriteResult(RegResController regCon, pipeLine line, int clockCycle);
+	void tryToWriteResult(RegResController regCon, UfController ufCon, pipeLine &line, int clockCycle);
 
 	//will try to perform next stage for every instruction in the pipeline
-	void performClockCicle(UfController ufCon, RegResController regCon);
+	void performClockCycle(UfController ufCon, RegResController regCon, int clockCycle);
 };
 
 
