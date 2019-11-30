@@ -5,7 +5,7 @@
 using namespace std;
 
 DispatchController::DispatchController(){
-	loadInstructions();
+	this->loadInstructions();
 }
 	
 void DispatchController::loadInstructions(){
