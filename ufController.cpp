@@ -147,4 +147,9 @@ void UfController::clearAndUpdateUf(int instructionId, string opName, string reg
 
 //will update attributes with the values modified in the last clock cicle
 void UfController::performClockTick(){
+
+	qj = next_qj;
+	qk = next_rk;
+	rj = next_rj;
+	rk = next_rk;
 }
