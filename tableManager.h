@@ -1,3 +1,6 @@
+#ifndef TABLE_MANAGER_H
+#define TABLE_MANAGER_H
+
 #include "screenManager.h"
 #include <string>
 #include <vector>
@@ -164,3 +167,6 @@ template<class T> tableManager<T> tableManager<T>::operator =(tableManager&& tm)
 	}
 	return *this;
 }
+
+
+#endif //TABLE_MANAGER_H
