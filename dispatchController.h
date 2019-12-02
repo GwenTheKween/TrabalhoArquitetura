@@ -16,12 +16,12 @@ class DispatchController{
 	
 private:
 	std::queue <instruction> instructionQueue;
-	UfController ufCon;		
-	PipelineController pipe; 	
-	RegResController regCon;
+	UfController& ufCon;
+	PipelineController& pipe;
+	RegResController& regCon;
 	std::vector< std::unordered_map<std::string, std::string> > createInstructionsMaps();
 public:
-	DispatchController();
+	DispatchController(PipelineController &pc, UfController &uc, RegResController &rrc);
 	
 	//will read instructions from file
 	void loadInstructions();
