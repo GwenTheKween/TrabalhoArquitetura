@@ -3,30 +3,38 @@
 
 #include <vector>
 #include <string>
+#include <exception>
 #include "instructionStruct.h"
+#include "regResultController.h"
 
-typedef struct{
-	std::string ufName, opName, fi, fj, qj, next_qj, qk, next_qk;
-	int rj, next_rj, rk, next_rk, instructionId;
+struct ufLine{
+	std::string ufName, opName, fi, fj, fk, qj, next_qj, qk, next_qk;
+	int rj, next_rj, rk, next_rk, instructionId, execCyclesLeft;
 	bool busy, next_busy;
-} ufLine;
+};
+
+/*
+inteiro 1
+soma/subtracao float 2
+mult float 10
+div float 40
+*/
 
 class UfController{
 
 private:
-	//inicialmente quantidade fixa de uf's de tipos determinados
-	//pensar em qual estrutura usar
-	//sugestao: usar struct como a de cima. Variaveis com next evitam conflito!!
-	std::vector<ufLine> ufs;
+	std::vector<ufLine> ufsInt;
+	std::vector<ufLine> ufsFloat;
+	std::unordered_map<std::string, int> nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mul", 10}, {"Div", 40}};
 	//talvez manter um vetor pras livres e um pras ocupadas? 
 public:
 	UfController();
 	
 	//checks if a compatible fu is available
-	bool hasUfAvailable(bool needsFloatingPointUf);
+	ufLine hasUfAvailable(bool needsFloatingPointUf);
 
 	//returns ufName - the name of the chosen fu
-	std::string populateUf(instruction dispatchedInstruction);
+	void populateUf(ufLine& uf, instruction& dispatchedInstruction, RegResController& regRes);
 	
 	//returns false if operands not ready otherwise returns true
 	bool readOperands(int instructionId, std::string opName); //alguma ideia melhor? precisa identificar a instrucao de alguma forma... talvez so id

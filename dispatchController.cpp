@@ -66,16 +66,19 @@ int DispatchController::tryToDispatchNext(UfController ufCon, PipelineController
 	//check if destiny register is free
 	if( regCon.isRegAvailable(nextInstruction.rd) ){
 		//checking if a compatible fu is available
-		if( ufCon.hasUfAvailable(nextInstruction.useFp) ){
+		//
+		ufLine ufReturned;
+		try{
+			ufReturned = ufCon.hasUfAvailable(nextInstruction.useFp);
 			//then will populate uf and register status
-			string fuName = ufCon.populateUf(nextInstruction);
-			regCon.populateReg(nextInstruction.rd, fuName);
+			ufCon.populateUf(ufReturned, nextInstruction, regCon);
+			regCon.populateReg(nextInstruction.rd, ufReturned.ufName);
 
 			//finally, send dispatched instruction to the pipeline
 			pipe.dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
 			
 			return nextInstruction.id;
-		}
+		}catch(const logic_error e){}
 	}
 	return -1;
 }
