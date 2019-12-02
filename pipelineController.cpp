@@ -7,10 +7,8 @@ using namespace std;
 #define EXECUTION 2
 #define WRITE_BACK 3
 
-PipelineController::PipelineController(){
-
-
-}
+PipelineController::PipelineController(tableManager<std::string>& tm):
+	gui(tm){}
 
 //adds new line of intruction
 void PipelineController::dispatchInstruction(int instructionId, std::string opName, int clockCycle){

@@ -4,7 +4,10 @@
 
 using namespace std;
 
-DispatchController::DispatchController(){
+DispatchController::DispatchController(PipelineController& pc, UfController& uc, RegResController& rrc):
+	pipe(pc),
+	ufCon(uc),
+	regCon(rrc){
 	this->loadInstructions();
 }
 	

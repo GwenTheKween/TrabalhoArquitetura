@@ -5,6 +5,7 @@
 #include <string>
 #include "ufController.h"
 #include "regResultController.h"
+#include "tableManager.h"
 
 typedef struct{
 	int instructionId;
@@ -21,8 +22,10 @@ private:
 	//pensei em armazenar uma struct para cada linha, alguma ideia mais pratica?
 	std::vector <pipeLine> instructions;
 
+	tableManager<std::string> gui;
+
 public:
-	PipelineController();
+	PipelineController(tableManager<std::string>& tm);
 
 	//adds new line of intruction
 	void dispatchInstruction(int instructionId, std::string opName, int clockCycle);

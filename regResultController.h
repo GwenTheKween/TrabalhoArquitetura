@@ -4,15 +4,20 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include "tableManager.h"
+
+extern std::vector<std::string> regs;
 
 class RegResController{
 
 private:
 	//will map register to fu using it
 	std::unordered_map <std::string, std::string> registers;	
+
+	tableManager<std::string> gui;
 	//the dispatch will have to check availability first so no conflict happens because of the writeback
 public:
-	RegResController();
+	RegResController(tableManager<std::string>& tm);
 
 	//checks if a register is being used by a fu
 	bool isRegAvailable(std::string regName);
