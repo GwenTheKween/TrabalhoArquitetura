@@ -4,7 +4,7 @@
 
 screenManager sm;
 
-int main(){
+tableManager<int> test(){
 	//gerando dados a serem impressos
 	std::vector<std::vector<int> >d;
 	std::vector<int> v;
@@ -32,10 +32,19 @@ int main(){
 
 	//tabela em si
 	tableManager<int> tm(0,0,col,lin,"d",d);
-
 	getch();
 
-	tm.update_line(0,"R0", v);
+	return tm;
+}
+
+int main(){
+	//teste dos operadores de copia e move
+	tableManager<int> t;
+	std::vector<int> v = {1,2};
+
+	t = test();
+
+	t.update_line(1,"R2",v);
 
 	//aguarda digitar um caracter, para poder ver o q esta acontecendo
 	getch();

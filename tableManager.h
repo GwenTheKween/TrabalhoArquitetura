@@ -15,6 +15,8 @@ private:
 	int panel;
 	std::vector<int> columnWidths;
 public:
+	//Construtor for within classes, waits until it has actual data to do anything
+	tableManager();
 	//constructor if all you have is column and line names
 	tableManager(int posX, //x position of the panel
 				 int posY, //y position of the panel
@@ -23,6 +25,12 @@ public:
 				 const char* format, //the string used in printf to format the data correctly. Assumed to NOT INCLUDE padding nor %.
 				 std::vector<std::vector<T> > d); //data to be printed and stored by the manager
 
+	//copy constructor, used for assingments when the other object will not be destroyed right after
+	tableManager(const tableManager& tm);
+
+	//move constructor, used for assignments when the other object WILL be destroyed right after
+	tableManager(tableManager&& tm);
+
 	//the destructor
 	~tableManager();
 
@@ -30,7 +38,14 @@ public:
 	void update_line(int line, //number of the line to be updated. line is calculated without the header or separators
 				std::string lineName, //name of the line. Needs to be resent because the class doesn't store it
 				std::vector<T> d); //the data to be printed;
+
+	//operators
+	tableManager operator =(const tableManager& tm); //copy operator
+	tableManager operator =(tableManager&& tm) noexcept; //move operator
 };
+
+template<class T> tableManager<T>::tableManager():
+	panel(-1){} //and empty vector
 
 /*
  * This constructor is used when you only have the names of columns and lines, and the data. It takes care of constructing the table
@@ -92,9 +107,30 @@ template<class T> tableManager<T>::tableManager(
 
 }
 
+/*
+ * Copy constructor. If shit hits the fan, the problem is that we need to allocate a new panel, instead of just getting the same ID
+ * This will need a new method in screenManager, where it can allocate a new panel with the exact same specs
+ */
+template<class T> tableManager<T>::tableManager(const tableManager& tm):
+	panel(tm.panel),
+	columnWidths(tm.columnWidths){}
+
+/*
+ * move constructor, should be plain sailing
+ */
+template<class T> tableManager<T>::tableManager(tableManager&& tm):
+	panel(tm.panel),
+	columnWidths(tm.columnWidths){
+
+	tm.panel = -1;
+	tm.columnWidths.clear();
+}
+
 //all it needs to do is zero out all variables and remove the panel
 template<class T> tableManager<T>::~tableManager(){
-	sm.removePanel(panel);
+	if(panel > 0){
+		sm.removePanel(panel);
+	}
 	panel = 0;
 }
 
@@ -109,4 +145,22 @@ template<class T> void tableManager<T>::update_line(int line, std::string lineNa
 	}
 	line = 2*line + 3; //convert to internal line number
 	sm.mvprint_to_panel(panel, line, 1, ss.str().c_str());
+}
+
+template<class T> tableManager<T> tableManager<T>::operator =(const tableManager<T>& tm){
+	if(this != &tm){
+		panel = tm.panel;
+		columnWidths = tm.columnWidths;
+	}
+	return *this;
+}
+
+template<class T> tableManager<T> tableManager<T>::operator =(tableManager&& tm) noexcept{
+	if(this != &tm){
+		panel = tm.panel;
+		columnWidths = tm.columnWidths;
+		tm.panel = -1;
+		tm.columnWidths.clear();
+	}
+	return *this;
 }
