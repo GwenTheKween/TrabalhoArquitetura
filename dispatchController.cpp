@@ -67,18 +67,18 @@ int DispatchController::tryToDispatchNext(UfController ufCon, PipelineController
 	if( regCon.isRegAvailable(nextInstruction.rd) ){
 		//checking if a compatible fu is available
 		//
-		
-		ufLine ufReturned = ufCon.hasUfAvailable(nextInstruction.useFp);
-		if( ufReturned != NULL) {//uf was found
+		ufLine ufReturned;
+		try{
+			ufReturned = ufCon.hasUfAvailable(nextInstruction.useFp);
 			//then will populate uf and register status
 			ufCon.populateUf(ufReturned, nextInstruction, regCon);
-			regCon.populateReg(nextInstruction.rd, fuName);
+			regCon.populateReg(nextInstruction.rd, ufReturned.ufName);
 
 			//finally, send dispatched instruction to the pipeline
 			pipe.dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
 			
 			return nextInstruction.id;
-		}
+		}catch(const logic_error e){}
 	}
 	return -1;
 }

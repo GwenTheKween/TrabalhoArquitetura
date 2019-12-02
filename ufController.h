@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <exception>
 #include "instructionStruct.h"
 #include "regResultController.h"
 

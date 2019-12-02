@@ -141,31 +141,27 @@ bool UfController::isWriteAvailable(int instructionId, string opName){
 			FU = ufsInt[i];
 		}
 	}
-	if(FU,.ufName == "not found"){
+	if(FU.ufName == "not found"){
 		Fp = true;
 		for(int i = 0; i < ufsFloat.size(); i++){
 			if(ufsFloat[i].instructionId == instructionId){
 				FU = ufsFloat[i];
 			}
 		}
-		if(FU,ufName == "not found"){
+		if(FU.ufName == "not found"){
 			fprintf(stderr, "isWriteAvailable: Instrucao nao encontrada na UF\n");
 			return false;
 		}
 	}
 
 	for(auto f:ufsInt){
-		if(f != FU){
-			if(!(((f.fj != FU.fi) || f.rj == 0) && ((f.fk != FU.fi) || f.rk == 0))){
-				return false;
-			}
+		if(!(((f.fj != FU.fi) || f.rj == 0) && ((f.fk != FU.fi) || f.rk == 0))){
+			return false;
 		}
 	}
 	for(auto f:ufsFloat){
-		if(f != FU){
-			if(!(((f.fj != FU.fi) || f.rj == 0) && ((f.fk != FU.fi) || f.rk == 0))){
-				return false;
-			}
+		if(!(((f.fj != FU.fi) || f.rj == 0) && ((f.fk != FU.fi) || f.rk == 0))){
+			return false;
 		}
 	}
 	return true;
