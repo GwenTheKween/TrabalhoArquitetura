@@ -66,9 +66,12 @@ int DispatchController::tryToDispatchNext(UfController ufCon, PipelineController
 	//check if destiny register is free
 	if( regCon.isRegAvailable(nextInstruction.rd) ){
 		//checking if a compatible fu is available
-		if( ufCon.hasUfAvailable(nextInstruction.useFp) ){
+		//
+		
+		ufLine ufReturned = ufCon.hasUfAvailable(nextInstruction.useFp);
+		if( ufReturned != NULL) {//uf was found
 			//then will populate uf and register status
-			string fuName = ufCon.populateUf(nextInstruction);
+			ufCon.populateUf(ufReturned, nextInstruction, regCon);
 			regCon.populateReg(nextInstruction.rd, fuName);
 
 			//finally, send dispatched instruction to the pipeline
