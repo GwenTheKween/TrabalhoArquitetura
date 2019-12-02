@@ -1,4 +1,5 @@
 #include <iostream>
+#include <exception>
 #include "ufController.h"
 
 using namespace std;
@@ -34,7 +35,7 @@ ufLine UfController::hasUfAvailable(bool needsFloatingPointUf){
 		if(!uf.busy)
 			return uf;
 	}
-	return NULL;
+	throw logic_error("Nenhuma unidade funcional disponivel");
 }
 
 void UfController::populateUf(ufLine& uf, instruction& dispatchedInstruction, RegResController& regRes){
@@ -131,6 +132,42 @@ bool UfController::runExecution(int instructionId, string opName){
 
 //returns false if the informed register is still waiting to be read by a UF otherwise returns true
 bool UfController::isWriteAvailable(int instructionId, string opName){
+	ufLine FU;
+	FU.ufName = "not found";
+	bool Fp = false;
+	//first checks if the instruction refers to an integer FU
+	for(int i = 0; i<ufsInt.size(); i++){
+		if(ufsInt[i].instructionId == instructionId){
+			FU = ufsInt[i];
+		}
+	}
+	if(FU,.ufName == "not found"){
+		Fp = true;
+		for(int i = 0; i < ufsFloat.size(); i++){
+			if(ufsFloat[i].instructionId == instructionId){
+				FU = ufsFloat[i];
+			}
+		}
+		if(FU,ufName == "not found"){
+			fprintf(stderr, "isWriteAvailable: Instrucao nao encontrada na UF\n");
+			return false;
+		}
+	}
+
+	for(auto f:ufsInt){
+		if(f != FU){
+			if(!(((f.fj != FU.fi) || f.rj == 0) && ((f.fk != FU.fi) || f.rk == 0))){
+				return false;
+			}
+		}
+	}
+	for(auto f:ufsFloat){
+		if(f != FU){
+			if(!(((f.fj != FU.fi) || f.rj == 0) && ((f.fk != FU.fi) || f.rk == 0))){
+				return false;
+			}
+		}
+	}
 	return true;
 }
 
@@ -155,9 +192,64 @@ string UfController::getDestReg(int instructionId, string opName){
 
 //will change UF's status and update UFs waiting to read register
 void UfController::clearAndUpdateUf(int instructionId, string opName, string regName){
-	
+	for(auto uf : ufsInt)
+	{
+		if(uf.instructionId == instructionId)
+		{
+			uf.busy = false;
+			uf.fi = "";
+			uf.fj = "";
+			uf.fk = "";
+			uf.instructionId = -1;
+			uf.next_busy = false;
+			uf.next_qj = "";
+			uf.next_qk = "";
+			uf.next_rj = -1;
+			uf.next_rk = -1;
+			uf.opName = "";
+			uf.qj = "";
+			uf.qk = "";
+			uf.rj = -1;
+			uf.rk = -1;
+		}
+	}
+	for(auto uf : ufsFloat)
+	{
+		if(uf.instructionId == instructionId)
+		{
+			uf.busy = false;
+			uf.fi = "";
+			uf.fj = "";
+			uf.fk = "";
+			uf.instructionId = -1;
+			uf.next_busy = false;
+			uf.next_qj = "";
+			uf.next_qk = "";
+			uf.next_rj = -1;
+			uf.next_rk = -1;
+			uf.opName = "";
+			uf.qj = "";
+			uf.qk = "";
+			uf.rj = -1;
+			uf.rk = -1;
+		}
+	}
+	fprintf(stderr, "Erro em clearAndUpdateUf: instrucao nao encontrada na UF");
 }
 
 //will update attributes with the values modified in the last clock cicle
 void UfController::performClockTick(){
+	for(auto uf : ufsInt){
+		uf.qj = uf.next_qj;
+		uf.qk = uf.next_rk;
+		uf.rj = uf.next_rj;
+		uf.rk = uf.next_rk;
+	
+	}
+	for(auto uf : ufsFloat){
+		uf.qj = uf.next_qj;
+		uf.qk = uf.next_rk;
+		uf.rj = uf.next_rj;
+		uf.rk = uf.next_rk;
+	}
 }
