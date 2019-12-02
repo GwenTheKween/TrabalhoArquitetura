@@ -136,7 +136,20 @@ bool UfController::isWriteAvailable(int instructionId, string opName){
 
 //returns the name of the destination register
 string UfController::getDestReg(int instructionId, string opName){
-
+	for(auto uf : ufsInt)
+	{
+		if(uf.instructionId == instructionId)
+		{
+			return uf.fi;
+		}
+	}
+	for(auto uf : ufsFloat)
+	{
+		if(uf.instructionId == instructionId)
+		{
+			return uf.fi;
+		}
+	}
 	return "NULL";
 }
 
