@@ -25,6 +25,8 @@ UfController::UfController(){
 	int1.opName = "Float2";
 	int1.busy = false;
 	ufsFloat.push_back(float2);
+
+	nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mul", 10}, {"Div", 40}};
 }
 
 //checks if a compatible fu is available and return it
@@ -38,7 +40,7 @@ ufLine UfController::hasUfAvailable(bool needsFloatingPointUf){
 	throw logic_error("Nenhuma unidade funcional disponivel");
 }
 
-void UfController::populateUf(ufLine& uf, instruction& dispatchedInstruction, RegResController& regRes){
+void UfController::populateUf(ufLine& uf, const instruction& dispatchedInstruction, const RegResController& regRes){
 	uf.instructionId = dispatchedInstruction.id;
 	if(uf.opName.substr(0, 3) == "Int")
 		uf.execCyclesLeft = nCyclesFloating[dispatchedInstruction.opName];
@@ -74,7 +76,7 @@ void UfController::populateUf(ufLine& uf, instruction& dispatchedInstruction, Re
 }
 
 //returns false if operands not ready otherwise returns true
-bool UfController::readOperands(int instructionId, string opName){ //alguma ideia melhor? precisa identificar a instrucao de alguma forma... talvez so id
+bool UfController::readOperands(int instructionId){ 
 	for(auto uf : ufsInt)
 	{
 		if(uf.instructionId == instructionId)
@@ -108,7 +110,7 @@ bool UfController::readOperands(int instructionId, string opName){ //alguma idei
 }
 
 //returns false if UF not yet done otherwise returns true
-bool UfController::runExecution(int instructionId, string opName){
+bool UfController::runExecution(int instructionId){
 	for(auto uf : ufsInt)
 	{
 		if(uf.instructionId == instructionId)
@@ -131,7 +133,7 @@ bool UfController::runExecution(int instructionId, string opName){
 }
 
 //returns false if the informed register is still waiting to be read by a UF otherwise returns true
-bool UfController::isWriteAvailable(int instructionId, string opName){
+bool UfController::isWriteAvailable(int instructionId){
 	ufLine FU;
 	FU.ufName = "not found";
 	bool Fp = false;
@@ -168,7 +170,7 @@ bool UfController::isWriteAvailable(int instructionId, string opName){
 }
 
 //returns the name of the destination register
-string UfController::getDestReg(int instructionId, string opName){
+string UfController::getDestReg(int instructionId){
 	for(auto uf : ufsInt)
 	{
 		if(uf.instructionId == instructionId)
@@ -187,7 +189,7 @@ string UfController::getDestReg(int instructionId, string opName){
 }
 
 //will change UF's status and update UFs waiting to read register
-void UfController::clearAndUpdateUf(int instructionId, string opName, string regName){
+void UfController::clearAndUpdateUf(int instructionId){
 	for(auto uf : ufsInt)
 	{
 		if(uf.instructionId == instructionId)

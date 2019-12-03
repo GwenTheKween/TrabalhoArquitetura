@@ -27,7 +27,7 @@ void PipelineController::dispatchInstruction(int instructionId, std::string opNa
 //calls ufController method to read operands. Updates pipeline and window?
 void PipelineController::tryToReadOperands(UfController ufCon, pipeLine &line, int clockCycle){
 	//will ask the FU to read the operands and then will update the pipeline
-	if (ufCon.readOperands(line.instructionId, line.opName)){
+	if (ufCon.readOperands(line.instructionId)){
 		line.stage[READ_OP] = clockCycle;
 		line.currStage = READ_OP;
 	}
@@ -43,7 +43,7 @@ void PipelineController::runExecution(UfController ufCon, pipeLine &line, int cl
 	}
 	
 	//will perform 1 cycle of execution	
-	if (ufCon.runExecution(line.instructionId, line.opName)){
+	if (ufCon.runExecution(line.instructionId)){
 		//then execution finished
 		line.finishedExec = true;
 		line.execEnd = clockCycle;
@@ -54,11 +54,11 @@ void PipelineController::runExecution(UfController ufCon, pipeLine &line, int cl
 //will update pipeline and call register result method to update register 
 void PipelineController::tryToWriteResult(RegResController regCon, UfController ufCon, pipeLine &line, int clockCycle){
 	
-	if(ufCon.isWriteAvailable(line.instructionId, line.opName)){
+	if(ufCon.isWriteAvailable(line.instructionId)){
 		//find register name
-		string regName = ufCon.getDestReg(line.instructionId, line.opName);
+		string regName = ufCon.getDestReg(line.instructionId);
 		//clear FU and register status
-		ufCon.clearAndUpdateUf(line.instructionId, line.opName, regName);
+		ufCon.clearAndUpdateUf(line.instructionId);
 		regCon.clearReg(regName);
 		
 		//terminating instruction

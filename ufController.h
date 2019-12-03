@@ -13,20 +13,16 @@ struct ufLine{
 	bool busy, next_busy;
 };
 
-/*
-inteiro 1
-soma/subtracao float 2
-mult float 10
-div float 40
-*/
-
 class UfController{
 
 private:
+	// Integer UFs
 	std::vector<ufLine> ufsInt;
+	// Floating point UFs
 	std::vector<ufLine> ufsFloat;
-	std::unordered_map<std::string, int> nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mul", 10}, {"Div", 40}};
-	//talvez manter um vetor pras livres e um pras ocupadas? 
+	// Number of cycles for each floating point instruction
+	std::unordered_map<std::string, int> nCyclesFloating;
+
 public:
 	UfController();
 	
@@ -34,22 +30,22 @@ public:
 	ufLine hasUfAvailable(bool needsFloatingPointUf);
 
 	//returns ufName - the name of the chosen fu
-	void populateUf(ufLine& uf, instruction& dispatchedInstruction, RegResController& regRes);
+	void populateUf(ufLine& uf, const instruction& dispatchedInstruction, const RegResController& regRes);
 	
 	//returns false if operands not ready otherwise returns true
-	bool readOperands(int instructionId, std::string opName); //alguma ideia melhor? precisa identificar a instrucao de alguma forma... talvez so id
+	bool readOperands(int instructionId); //alguma ideia melhor? precisa identificar a instrucao de alguma forma... talvez so id
 	
 	//returns false if UF not yet done otherwise returns true
-	bool runExecution(int instructionId, std::string opName);
+	bool runExecution(int instructionId);
 
 	//returns false if the informed register is still waiting to be read by a UF otherwise returns true
-	bool isWriteAvailable(int instructionId, std::string opName);
+	bool isWriteAvailable(int instructionId);
 	
 	//returns the name of the destination register	
-	std::string getDestReg(int instructionId, std::string opName);
+	std::string getDestReg(int instructionId);
 
 	//will change UF's status and update UFs waiting to read register
-	void clearAndUpdateUf(int instructionId, std::string opName, std::string regName);
+	void clearAndUpdateUf(int instructionId);
 	
 	//will update attributes with the values modified in the last clock cicle
 	void performClockTick();
