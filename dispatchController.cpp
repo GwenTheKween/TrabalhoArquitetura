@@ -55,7 +55,7 @@ void DispatchController::loadInstructions(){
 	}
 }
 
-int DispatchController::tryToDispatchNext(UfController& ufCon, PipelineController& pipe, RegResController& regCon, int clockCycle){
+int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineController* pipe, RegResController* regCon, int clockCycle){
 	
 	instruction nextInstruction = instructionQueue.front();
 	instructionQueue.pop();
@@ -64,37 +64,36 @@ int DispatchController::tryToDispatchNext(UfController& ufCon, PipelineControlle
 	//check if destiny register is free
 	//but first, check if is an I type instruction or an R type
 	if(nextInstruction.isRtype){
-		if( regCon.isRegAvailable(nextInstruction.rd) ){
+		if( regCon->isRegAvailable(nextInstruction.rd) ){
 			//checking if a compatible fu is available
 			ufLine* ufReturned;
 			try{
-				ufReturned = ufCon.hasUfAvailable(nextInstruction.useFp);
+				ufReturned = ufCon->hasUfAvailable(nextInstruction.useFp);
 				//then will populate uf and register status
-				ufCon.populateUf(ufReturned, nextInstruction, regCon);
-				regCon.populateReg(nextInstruction.rd, ufReturned->ufName);
+				ufCon->populateUf(ufReturned, nextInstruction, regCon);
+				regCon->populateReg(nextInstruction.rd, ufReturned->ufName);
 
 				//finally, send dispatched instruction to the pipeline
-				pipe.dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
+				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
 				
 				return nextInstruction.id;
 			}catch(const logic_error e){}
 		}
 	}else{
-		if( regCon.isRegAvailable(nextInstruction.rt) ){
+		if( regCon->isRegAvailable(nextInstruction.rt) ){
 			//checking if a compatible fu is available
 			ufLine* ufReturned;
 			try{
-				ufReturned = ufCon.hasUfAvailable(nextInstruction.useFp);
+				ufReturned = ufCon->hasUfAvailable(nextInstruction.useFp);
 				//then will populate uf and register status
-				ufCon.populateUf(ufReturned, nextInstruction, regCon);
-				regCon.populateReg(nextInstruction.rt, ufReturned->ufName);
+				ufCon->populateUf(ufReturned, nextInstruction, regCon);
+				regCon->populateReg(nextInstruction.rt, ufReturned->ufName);
 
 				//finally, send dispatched instruction to the pipeline
-				pipe.dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
+				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
 				
 				return nextInstruction.id;
-			}catch(const logic_error e){
-			}
+			}catch(const logic_error e){}
 		}
 	}
 	return -1;

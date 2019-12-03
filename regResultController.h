@@ -20,10 +20,10 @@ public:
 	RegResController(tableManager<std::string>& tm);
 
 	//checks if a register is being used by a fu
-	bool isRegAvailable(std::string regName) const;
+	bool isRegAvailable(std::string regName) ;
 	
 	//obtains the functional unit that is using this register
-	std::string getRegister(std::string regName) const;
+	std::string getRegister(std::string regName);
 
 	//specifies the functional unit using a register
 	void populateReg(std::string regName, std::string fuName);

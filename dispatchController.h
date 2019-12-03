@@ -27,7 +27,7 @@ public:
 	void loadInstructions();
 	
 	//will return -1 if dispatch fails or the instructionId
-	int tryToDispatchNext(UfController& ufCon, PipelineController& pipe, RegResController& regCon, int clockCycle);
+	int tryToDispatchNext(UfController* ufCon, PipelineController* pipe, RegResController* regCon, int clockCycle);
 };
 
 #endif

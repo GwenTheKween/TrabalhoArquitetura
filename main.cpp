@@ -20,7 +20,7 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 	std::vector<std::vector<std::string> > data(lines.size(), tmp);//creates the matrix with the printed data
 
 	//creates the table itself
-	tableManager<std::string> tm(posX, posY, columns, lines, data);
+;	tableManager<std::string> tm(posX, posY, columns, lines, data);
 	*nextY = 2*lines.size() + 3; //new value of X, for the next column
 	*nextX += 1;
 	for(auto s:columns){
@@ -122,21 +122,27 @@ int main(){
 
 	//creates third table, to show the clock cycle
 	tableManager<std::string> clock = create_clock_table();
+	std::vector<std::string> empty;
 
 
 	DispatchController dc;
 
+
 	int clockCycle = 0;
 	while(true){
+		getch();
 		//main cycle
 		//the first thing done is to try and dispatch a new instruction
-		dc.tryToDispatchNext(uc, pc, rrc, clockCycle);
+		dc.tryToDispatchNext(&uc, &pc, &rrc, clockCycle);
 
 		pc.performClockCycle(uc, rrc, clockCycle);
 
 		//then we update the clock cycle
 		clockCycle++;
-		break;
+		std::stringstream ss;
+		ss << clockCycle;
+		clock.update_line(0,ss.str(),empty);
+		//break;
 	}
 	return 0;
 }
