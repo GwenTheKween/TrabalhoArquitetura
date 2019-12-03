@@ -33,3 +33,6 @@
 
 # Debug auxiliary files
 vgcore.*
+
+# ccls folder
+/.ccls-cache
