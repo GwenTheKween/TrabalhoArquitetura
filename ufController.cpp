@@ -7,25 +7,22 @@ using namespace std;
 
 UfController::UfController(tableManager<std::string> tm):
 	gui(tm){
-	ufLine int1;
-	int1.opName = "Int1";
-	int1.busy = false;
-	ufsInt.push_back(int1);
+	ufLine uf;
+	uf.ufName = "Int1";
+	uf.busy = uf.next_busy = false;
+	uf.opName = uf.fi = uf.fj = uf.fk = uf.qj = uf.qk = uf.next_qj = uf.next_qk = "";
+	uf.rj = uf.next_rj = uf.rk = uf.next_rk = uf.instructionId = uf.execCyclesLeft = 0;
 
-	ufLine int2;
-	int1.opName = "Int2";
-	int1.busy = false;
-	ufsInt.push_back(int2);
+	ufsInt.push_back(uf);
 
-	ufLine float1;
-	int1.opName = "Float1";
-	int1.busy = false;
-	ufsFloat.push_back(float1);
+	uf.ufName = "Int2";
+	ufsInt.push_back(uf);
 
-	ufLine float2;
-	int1.opName = "Float2";
-	int1.busy = false;
-	ufsFloat.push_back(float2);
+	uf.ufName = "Float1";
+	ufsFloat.push_back(uf);
+
+	uf.ufName = "Float2";
+	ufsFloat.push_back(uf);
 
 	nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mul", 10}, {"Div", 40}};
 }
@@ -83,33 +80,15 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 }
 
 //returns false if operands not ready otherwise returns true
-bool UfController::readOperands(int instructionId){ 
-	for(auto uf : ufsInt){
-		if(uf.instructionId == instructionId){
-			if(uf.rj && uf.rk)
-			{
-				uf.rj = uf.rk = 0;
-				uf.qj = uf.qk = "0";
-				return true;
-			}
-			else
-				return false;
-		}
+bool UfController::readOperands(ufLine* uf){ 
+	if(uf->rj && uf->rk)
+	{
+		uf->rj = uf->rk = 0;
+		uf->qj = uf->qk = "0";
+		return true;
 	}
-	for(auto uf : ufsFloat){
-		if(uf.instructionId == instructionId){
-			if(uf.rj && uf.rk)
-			{
-				uf.rj = uf.rk = 0;
-				uf.qj = uf.qk = "0";
-				return true;
-			}
-			else
-				return false;
-		}
-	}
-	fprintf(stderr, "Erro em readOperands: instrucao nao encontrada na UF");
-	return false;
+	else
+		return false;
 }
 
 //returns false if UF not yet done otherwise returns true
@@ -119,34 +98,14 @@ bool UfController::runExecution(ufLine* uf){
 }
 
 //returns false if the informed register is still waiting to be read by a UF otherwise returns true
-bool UfController::isWriteAvailable(int instructionId){
-	ufLine FU;
-	FU.ufName = "not found";
-	//first checks if the instruction refers to an integer FU
-	for(size_t i = 0; i<ufsInt.size(); i++){
-		if(ufsInt[i].instructionId == instructionId){
-			FU = ufsInt[i];
-		}
-	}
-	if(FU.ufName == "not found"){
-		for(size_t i = 0; i < ufsFloat.size(); i++){
-			if(ufsFloat[i].instructionId == instructionId){
-				FU = ufsFloat[i];
-			}
-		}
-		if(FU.ufName == "not found"){
-			fprintf(stderr, "isWriteAvailable: Instrucao nao encontrada na UF\n");
-			return false;
-		}
-	}
-
+bool UfController::isWriteAvailable(ufLine* FU){
 	for(auto f:ufsInt){
-		if(!(((f.fj != FU.fi) || f.rj == 0) && ((f.fk != FU.fi) || f.rk == 0))){
+		if(!(((f.fj != FU->fi) || f.rj == 0) && ((f.fk != FU->fi) || f.rk == 0))){
 			return false;
 		}
 	}
 	for(auto f:ufsFloat){
-		if(!(((f.fj != FU.fi) || f.rj == 0) && ((f.fk != FU.fi) || f.rk == 0))){
+		if(!(((f.fj != FU->fi) || f.rj == 0) && ((f.fk != FU->fi) || f.rk == 0))){
 			return false;
 		}
 	}
@@ -173,50 +132,22 @@ string UfController::getDestReg(int instructionId){
 }
 
 //will change UF's status and update UFs waiting to read register
-void UfController::clearAndUpdateUf(int instructionId){
-	for(auto uf : ufsInt)
-	{
-		if(uf.instructionId == instructionId)
-		{
-			uf.busy = false;
-			uf.fi = "";
-			uf.fj = "";
-			uf.fk = "";
-			uf.instructionId = -1;
-			uf.next_busy = false;
-			uf.next_qj = "";
-			uf.next_qk = "";
-			uf.next_rj = -1;
-			uf.next_rk = -1;
-			uf.opName = "";
-			uf.qj = "";
-			uf.qk = "";
-			uf.rj = -1;
-			uf.rk = -1;
-		}
-	}
-	for(auto uf : ufsFloat)
-	{
-		if(uf.instructionId == instructionId)
-		{
-			uf.busy = false;
-			uf.fi = "";
-			uf.fj = "";
-			uf.fk = "";
-			uf.instructionId = -1;
-			uf.next_busy = false;
-			uf.next_qj = "";
-			uf.next_qk = "";
-			uf.next_rj = -1;
-			uf.next_rk = -1;
-			uf.opName = "";
-			uf.qj = "";
-			uf.qk = "";
-			uf.rj = -1;
-			uf.rk = -1;
-		}
-	}
-	fprintf(stderr, "Erro em clearAndUpdateUf: instrucao nao encontrada na UF");
+void UfController::clearAndUpdateUf(ufLine* uf){
+	uf->busy = false;
+	uf->fi = "";
+	uf->fj = "";
+	uf->fk = "";
+	uf->instructionId = -1;
+	uf->next_busy = false;
+	uf->next_qj = "";
+	uf->next_qk = "";
+	uf->next_rj = -1;
+	uf->next_rk = -1;
+	uf->opName = "";
+	uf->qj = "";
+	uf->qk = "";
+	uf->rj = -1;
+	uf->rk = -1;
 }
 
 //will update attributes with the values modified in the last clock cicle

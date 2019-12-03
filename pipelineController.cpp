@@ -54,7 +54,7 @@ void PipelineController::dispatchInstruction(int instructionId, std::string opNa
 //calls ufController method to read operands. Updates pipeline and window?
 bool PipelineController::tryToReadOperands(UfController& ufCon, pipeLine &line, int clockCycle){
 	//will ask the FU to read the operands and then will update the pipeline
-	if (ufCon.readOperands(line.instructionId)){
+	if (ufCon.readOperands(line.UF)){
 		line.stage[READ_OP] = clockCycle;
 		line.currStage = READ_OP;
 		return true;
@@ -84,12 +84,12 @@ bool PipelineController::runExecution(UfController& ufCon, pipeLine &line, int c
 //calls ufController method to check if write is available and if it is
 //will update pipeline and call register result method to update register 
 bool PipelineController::tryToWriteResult(RegResController& regCon, UfController& ufCon, pipeLine &line, int clockCycle){
-	sm.mvprint_to_panel(-1,30,0,"its johnny");
-	if(ufCon.isWriteAvailable(line.instructionId)){
+	if(ufCon.isWriteAvailable(line.UF)){
+		sm.mvprint_to_panel(-1,30,0,"its johnny");
 		//find register name
 		string regName = ufCon.getDestReg(line.instructionId);
 		//clear FU and register status
-		ufCon.clearAndUpdateUf(line.instructionId);
+		ufCon.clearAndUpdateUf(line.UF);
 		regCon.clearReg(regName);
 		
 		//terminating instruction
