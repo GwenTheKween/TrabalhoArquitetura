@@ -54,7 +54,7 @@ tableManager<std::string> create_regsters_table(int* nextX, int* nextY){
 	return tm;
 }
 
-tableManager<std::string> create_clock_table(int *nextX, int *nextY){
+tableManager<std::string> create_clock_table(){
 	int x,y;
 	getmaxyx(stdscr, y, x); //gets the maximum height and width of the screen
 	int posY = y - 5; //sticks to the bottom of the screen
@@ -108,27 +108,35 @@ int main(){
 	//coordinates for next table creation
 	int nextX = 0, nextY = 0;
 
-	
-
 	//creates fourth table, for uf controller
 	tableManager<std::string> tm_uf = create_uf_controller_table(&nextX, &nextY);
 	UfController uc(tm_uf);
-	getch();
 
 	//creates first table, for the pipeline information
-	tableManager<std::string> tm1 = create_pipeline_table(&nextX, &nextY);
-	PipelineController pc(tm1);
-	getch();
+	tableManager<std::string> tm_pipe = create_pipeline_table(&nextX, &nextY);
+	PipelineController pc(tm_pipe);
 
 	//creates second table, for registers information
-	tableManager<std::string> tm2 = create_regsters_table(&nextX,&nextY);
-	RegResController rrc(tm2);
-	getch();
+	tableManager<std::string> tm_reg = create_regsters_table(&nextX,&nextY);
+	RegResController rrc(tm_reg);
 
 	//creates third table, to show the clock cycle
-	tableManager<std::string> clock = create_clock_table(&nextX, &nextY);
-	getch();
-	
-	DispatchController dc(pc, uc, rrc);
+	tableManager<std::string> clock = create_clock_table();
+
+
+	DispatchController dc;
+
+	int clockCycle = 0;
+	while(true){
+		//main cycle
+		//the first thing done is to try and dispatch a new instruction
+		dc.tryToDispatchNext(uc, pc, rrc, clockCycle);
+
+		//pc.performClockCycle(uc, rrc, clockCycle);
+
+		//then we update the clock cycle
+		clockCycle++;
+		break;
+	}
 	return 0;
 }
