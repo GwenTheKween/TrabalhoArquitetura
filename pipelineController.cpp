@@ -25,7 +25,7 @@ void PipelineController::dispatchInstruction(int instructionId, std::string opNa
 }
 
 //calls ufController method to read operands. Updates pipeline and window?
-void PipelineController::tryToReadOperands(UfController ufCon, pipeLine &line, int clockCycle){
+void PipelineController::tryToReadOperands(UfController& ufCon, pipeLine &line, int clockCycle){
 	//will ask the FU to read the operands and then will update the pipeline
 	if (ufCon.readOperands(line.instructionId)){
 		line.stage[READ_OP] = clockCycle;
@@ -34,7 +34,7 @@ void PipelineController::tryToReadOperands(UfController ufCon, pipeLine &line, i
 }
 
 //calls ufController method to run execution. Updates pipeline and window
-void PipelineController::runExecution(UfController ufCon, pipeLine &line, int clockCycle){
+void PipelineController::runExecution(UfController& ufCon, pipeLine &line, int clockCycle){
 	
 	//first time running execution
 	if( line.currStage == READ_OP ){
@@ -52,7 +52,7 @@ void PipelineController::runExecution(UfController ufCon, pipeLine &line, int cl
 
 //calls ufController method to check if write is available and if it is
 //will update pipeline and call register result method to update register 
-void PipelineController::tryToWriteResult(RegResController regCon, UfController ufCon, pipeLine &line, int clockCycle){
+void PipelineController::tryToWriteResult(RegResController& regCon, UfController& ufCon, pipeLine &line, int clockCycle){
 	
 	if(ufCon.isWriteAvailable(line.instructionId)){
 		//find register name
@@ -68,7 +68,7 @@ void PipelineController::tryToWriteResult(RegResController regCon, UfController 
 }
 
 //will try to perform next stage for every instruction in the pipeline
-void PipelineController::performClockCycle(UfController ufCon, RegResController regCon, int clockCycle){
+void PipelineController::performClockCycle(UfController& ufCon, RegResController& regCon, int clockCycle){
 	
 	for (int i=0; i<this->instructions.size(); i++){
 		

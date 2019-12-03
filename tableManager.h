@@ -25,7 +25,6 @@ public:
 				 int posY, //y position of the panel
 				 std::vector<std::string> columnNames, //column names. Assumed to be the largest string on the column
 				 std::vector<std::string> lineNames, // line names. doesn't include the first line
-				 const char* format, //the string used in printf to format the data correctly. Assumed to NOT INCLUDE padding nor %.
 				 std::vector<std::vector<T> > d); //data to be printed and stored by the manager
 
 	//copy constructor, used for assingments when the other object will not be destroyed right after
@@ -58,7 +57,6 @@ template<class T> tableManager<T>::tableManager(
 		int posY, //y position
 		std::vector<std::string> columnNames, //names of the columns. Assumed to be the largest string of the column
 		std::vector<std::string> lineNames, //names of the lines, to go on the first column. Doesn't include the name of the first line
-		const char* format, // format used in printf for the data
 		std::vector<std::vector<T> > d){ //data to be stored
 
 

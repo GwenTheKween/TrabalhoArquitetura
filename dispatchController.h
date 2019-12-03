@@ -16,18 +16,18 @@ class DispatchController{
 	
 private:
 	std::queue <instruction> instructionQueue;
-	UfController& ufCon;
-	PipelineController& pipe;
-	RegResController& regCon;
+	UfController *ufCon;
+	PipelineController *pipe;
+	RegResController *regCon;
 	std::vector< std::unordered_map<std::string, std::string> > createInstructionsMaps();
 public:
-	DispatchController(PipelineController &pc, UfController &uc, RegResController &rrc);
+	DispatchController();
 	
 	//will read instructions from file
 	void loadInstructions();
 	
 	//will return -1 if dispatch fails or the instructionId
-	int tryToDispatchNext(UfController ufCon, PipelineController pipe, RegResController regCon, int clockCycle);
+	int tryToDispatchNext(UfController& ufCon, PipelineController& pipe, RegResController& regCon, int clockCycle);
 };
 
 #endif

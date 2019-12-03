@@ -6,7 +6,7 @@ using namespace std;
 RegResController::RegResController(tableManager<string>& tm):
 	gui(tm){
     for(int i = 0; i < regs.size(); i++){
-        registers.emplace(regs[i], "NULL"); // registers available have a NULL string
+        registers[regs[i]]= "NULL"; // registers available have a NULL string
     }
     return;
 }

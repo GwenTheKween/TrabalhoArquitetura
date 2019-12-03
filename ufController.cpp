@@ -5,7 +5,8 @@
 using namespace std;
 
 
-UfController::UfController(){
+UfController::UfController(tableManager<std::string> tm):
+	gui(tm){
 	ufLine int1;
 	int1.opName = "Int1";
 	int1.busy = false;

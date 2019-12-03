@@ -6,6 +6,7 @@
 #include <exception>
 #include "instructionStruct.h"
 #include "regResultController.h"
+#include "tableManager.h"
 
 struct ufLine{
 	std::string ufName, opName, fi, fj, fk, qj, next_qj, qk, next_qk;
@@ -22,9 +23,10 @@ private:
 	std::vector<ufLine> ufsFloat;
 	// Number of cycles for each floating point instruction
 	std::unordered_map<std::string, int> nCyclesFloating;
+	tableManager<std::string> gui;
 
 public:
-	UfController();
+	UfController(tableManager<std::string> tm);
 	
 	//checks if a compatible fu is available
 	ufLine hasUfAvailable(bool needsFloatingPointUf);
