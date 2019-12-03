@@ -84,7 +84,6 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 
 //returns false if operands not ready otherwise returns true
 bool UfController::readOperands(int instructionId){ 
-	sm.mvprint_to_panel(-1,30,0,"%d",instructionId);
 	for(auto uf : ufsInt){
 		if(uf.instructionId == instructionId){
 			if(uf.rj && uf.rk)
@@ -114,42 +113,23 @@ bool UfController::readOperands(int instructionId){
 }
 
 //returns false if UF not yet done otherwise returns true
-bool UfController::runExecution(int instructionId){
-	for(auto uf : ufsInt)
-	{
-		if(uf.instructionId == instructionId)
-		{
-			uf.execCyclesLeft--;
-			return true;
-		}
-	}
-	for(auto uf : ufsFloat)
-	{
-		if(uf.instructionId == instructionId)
-		{
-			uf.execCyclesLeft--;
-			if(uf.execCyclesLeft == 0)
-				return true;
-			break;
-		}
-	}
-	return false;
+bool UfController::runExecution(ufLine* uf){
+	uf->execCyclesLeft--;
+	return uf->execCyclesLeft == 0;
 }
 
 //returns false if the informed register is still waiting to be read by a UF otherwise returns true
 bool UfController::isWriteAvailable(int instructionId){
 	ufLine FU;
 	FU.ufName = "not found";
-	bool Fp = false;
 	//first checks if the instruction refers to an integer FU
-	for(int i = 0; i<ufsInt.size(); i++){
+	for(size_t i = 0; i<ufsInt.size(); i++){
 		if(ufsInt[i].instructionId == instructionId){
 			FU = ufsInt[i];
 		}
 	}
 	if(FU.ufName == "not found"){
-		Fp = true;
-		for(int i = 0; i < ufsFloat.size(); i++){
+		for(size_t i = 0; i < ufsFloat.size(); i++){
 			if(ufsFloat[i].instructionId == instructionId){
 				FU = ufsFloat[i];
 			}

@@ -38,7 +38,7 @@ public:
 	bool readOperands(int instructionId); //alguma ideia melhor? precisa identificar a instrucao de alguma forma... talvez so id
 	
 	//returns false if UF not yet done otherwise returns true
-	bool runExecution(int instructionId);
+	bool runExecution(ufLine* uf);
 
 	//returns false if the informed register is still waiting to be read by a UF otherwise returns true
 	bool isWriteAvailable(int instructionId);
