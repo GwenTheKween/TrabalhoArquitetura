@@ -61,19 +61,17 @@ int DispatchController::tryToDispatchNext(UfController& ufCon, PipelineControlle
 	instructionQueue.pop();
 
 	
-	sm.mvprint_to_panel(-1,30,0,"checking reg: %s available\n",nextInstruction.rd.c_str());
-	getch();
 	//check if destiny register is free
 	//but first, check if is an I type instruction or an R type
 	if(nextInstruction.isRtype){
 		if( regCon.isRegAvailable(nextInstruction.rd) ){
 			//checking if a compatible fu is available
-			ufLine ufReturned;
+			ufLine* ufReturned;
 			try{
 				ufReturned = ufCon.hasUfAvailable(nextInstruction.useFp);
 				//then will populate uf and register status
 				ufCon.populateUf(ufReturned, nextInstruction, regCon);
-				regCon.populateReg(nextInstruction.rd, ufReturned.ufName);
+				regCon.populateReg(nextInstruction.rd, ufReturned->ufName);
 
 				//finally, send dispatched instruction to the pipeline
 				pipe.dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
@@ -84,18 +82,19 @@ int DispatchController::tryToDispatchNext(UfController& ufCon, PipelineControlle
 	}else{
 		if( regCon.isRegAvailable(nextInstruction.rt) ){
 			//checking if a compatible fu is available
-			ufLine ufReturned;
+			ufLine* ufReturned;
 			try{
 				ufReturned = ufCon.hasUfAvailable(nextInstruction.useFp);
 				//then will populate uf and register status
 				ufCon.populateUf(ufReturned, nextInstruction, regCon);
-				regCon.populateReg(nextInstruction.rt, ufReturned.ufName);
+				regCon.populateReg(nextInstruction.rt, ufReturned->ufName);
 
 				//finally, send dispatched instruction to the pipeline
 				pipe.dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
 				
 				return nextInstruction.id;
-			}catch(const logic_error e){}
+			}catch(const logic_error e){
+			}
 		}
 	}
 	return -1;

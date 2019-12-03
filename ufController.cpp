@@ -31,57 +31,62 @@ UfController::UfController(tableManager<std::string> tm):
 }
 
 //checks if a compatible fu is available and return it
-ufLine UfController::hasUfAvailable(bool needsFloatingPointUf){
-	std::vector<ufLine>& ufs = needsFloatingPointUf ? ufsFloat : ufsInt;
-	for(auto uf : ufs)
-	{
-		if(!uf.busy)
-			return uf;
+ufLine* UfController::hasUfAvailable(bool needsFloatingPointUf){
+	if(needsFloatingPointUf){
+		for(size_t i = 0; i<ufsFloat.size(); i++){
+			if(!ufsFloat[i].busy)
+				return ufsFloat.data()+i;
+		}
+	}else{
+		for(size_t i = 0; i < ufsInt.size(); i++){
+			if(!ufsInt[i].busy){
+				return ufsInt.data() + i;
+			}
+		}
 	}
 	throw logic_error("Nenhuma unidade funcional disponivel");
 }
 
-void UfController::populateUf(ufLine& uf, const instruction& dispatchedInstruction, const RegResController& regRes){
-	uf.instructionId = dispatchedInstruction.id;
-	if(uf.opName.substr(0, 3) == "Int")
-		uf.execCyclesLeft = nCyclesFloating[dispatchedInstruction.opName];
+void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstruction,RegResController* regRes){
+	uf->instructionId = dispatchedInstruction.id;
+	if(uf->opName.substr(0, 3) == "Int")
+		uf->execCyclesLeft = nCyclesFloating[dispatchedInstruction.opName];
 	else
-		uf.execCyclesLeft = 1;
-	uf.next_busy = true;
-	uf.opName = dispatchedInstruction.opName;
+		uf->execCyclesLeft = 1;
+	uf->next_busy = true;
+	uf->opName = dispatchedInstruction.opName;
 	if(dispatchedInstruction.isRtype)
 	{
-		uf.fi = dispatchedInstruction.rd;
-		uf.fj = dispatchedInstruction.rs;
-		uf.fk = dispatchedInstruction.rt;
+		uf->fi = dispatchedInstruction.rd;
+		uf->fj = dispatchedInstruction.rs;
+		uf->fk = dispatchedInstruction.rt;
 	}
 	else
 	{
-		if(dispatchedInstruction.opName != "SW")
+	if(dispatchedInstruction.opName != "SW")
 		{
-			uf.fi = dispatchedInstruction.rt;
-			uf.fj = dispatchedInstruction.rs;
+			uf->fi = dispatchedInstruction.rt;
+			uf->fj = dispatchedInstruction.rs;
 		}
 		else
 		{
-			uf.fi = "-";
-			uf.fj = dispatchedInstruction.rs;
-			uf.fk = dispatchedInstruction.rt;
+			uf->fi = "-";
+			uf->fj = dispatchedInstruction.rs;
+			uf->fk = dispatchedInstruction.rt;
 		}
 	}
-	uf.qj = regRes.isRegAvailable(uf.fj) ? "0" : regRes.getRegister(uf.fj);
-	uf.qk = regRes.isRegAvailable(uf.fk) ? "0" : regRes.getRegister(uf.fk);
+	uf->qj = regRes->isRegAvailable(uf->fj) ? "0" : regRes->getRegister(uf->fj);
+	uf->qk = regRes->isRegAvailable(uf->fk) ? "0" : regRes->getRegister(uf->fk);
 
-	uf.rj = uf.qj == "0" ? 1 : 0;
-	uf.rk = uf.qk == "0" ? 1 : 0;
+	uf->rj = uf->qj == "0" ? 1 : 0;
+	uf->rk = uf->qk == "0" ? 1 : 0;
 }
 
 //returns false if operands not ready otherwise returns true
 bool UfController::readOperands(int instructionId){ 
-	for(auto uf : ufsInt)
-	{
-		if(uf.instructionId == instructionId)
-		{
+	sm.mvprint_to_panel(-1,30,0,"%d",instructionId);
+	for(auto uf : ufsInt){
+		if(uf.instructionId == instructionId){
 			if(uf.rj && uf.rk)
 			{
 				uf.rj = uf.rk = 0;
@@ -92,10 +97,8 @@ bool UfController::readOperands(int instructionId){
 				return false;
 		}
 	}
-	for(auto uf : ufsFloat)
-	{
-		if(uf.instructionId == instructionId)
-		{
+	for(auto uf : ufsFloat){
+		if(uf.instructionId == instructionId){
 			if(uf.rj && uf.rk)
 			{
 				uf.rj = uf.rk = 0;

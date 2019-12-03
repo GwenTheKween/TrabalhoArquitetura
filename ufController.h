@@ -29,10 +29,10 @@ public:
 	UfController(tableManager<std::string> tm);
 	
 	//checks if a compatible fu is available
-	ufLine hasUfAvailable(bool needsFloatingPointUf);
+	ufLine* hasUfAvailable(bool needsFloatingPointUf);
 
 	//returns ufName - the name of the chosen fu
-	void populateUf(ufLine& uf, const instruction& dispatchedInstruction, const RegResController& regRes);
+	void populateUf(ufLine* uf,const instruction& dispatchedInstruction,RegResController* regRes);
 	
 	//returns false if operands not ready otherwise returns true
 	bool readOperands(int instructionId); //alguma ideia melhor? precisa identificar a instrucao de alguma forma... talvez so id

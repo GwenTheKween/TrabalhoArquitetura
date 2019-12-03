@@ -11,14 +11,14 @@ RegResController::RegResController(tableManager<string>& tm):
     return;
 }
 
-bool RegResController::isRegAvailable(string regName) const{
-    string r = registers.at(regName);
+bool RegResController::isRegAvailable(string regName) {
+    string r = registers[regName];
     if(r.compare("NULL") == 0) return 1;
     else return 0;    
 }
 
-string RegResController::getRegister(string regName) const{
-    return registers.at(regName);
+string RegResController::getRegister(string regName){
+    return registers[regName];
 }
 
 void RegResController::populateReg(string regName, string fuName){

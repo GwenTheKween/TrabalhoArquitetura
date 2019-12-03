@@ -15,7 +15,7 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 		"Exec Complete",
 		"Write Result"
 	}; //column names for the final table
-	std::vector<std::string> lines = {"1","2","3","4","5"}; //line names for the final table
+	std::vector<std::string> lines = {"0","1","2","3","4"}; //line names for the final table
 	std::vector<std::string> tmp(columns.size() - 1," ");//temporary vector, to make matrix creation more readable
 	std::vector<std::vector<std::string> > data(lines.size(), tmp);//creates the matrix with the printed data
 
@@ -132,7 +132,7 @@ int main(){
 		//the first thing done is to try and dispatch a new instruction
 		dc.tryToDispatchNext(uc, pc, rrc, clockCycle);
 
-		//pc.performClockCycle(uc, rrc, clockCycle);
+		pc.performClockCycle(uc, rrc, clockCycle);
 
 		//then we update the clock cycle
 		clockCycle++;

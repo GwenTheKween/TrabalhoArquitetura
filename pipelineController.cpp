@@ -21,6 +21,21 @@ void PipelineController::dispatchInstruction(int instructionId, std::string opNa
 	newInstruction.stage[DISPATCH] = clockCycle;
 	newInstruction.finishedExec = false;
 
+	//updates the screen
+	//CHAGNE THE LINE NUMBER TO AN UNORDERED MAP THAT STORES ID AND LINE NUMBER
+	stringstream ss;
+	vector<string> stages;
+	ss << newInstruction.stage[DISPATCH];
+	stages.push_back(ss.str());
+	ss.str("");
+	stages.push_back(ss.str());
+	stages.push_back(ss.str());
+	stages.push_back(ss.str());
+	ss << instructionId;
+	gui.update_line(instructionId,ss.str(),stages);
+
+	getch();
+
 	this->instructions.push_back(newInstruction);
 }
 
@@ -70,7 +85,7 @@ void PipelineController::tryToWriteResult(RegResController& regCon, UfController
 //will try to perform next stage for every instruction in the pipeline
 void PipelineController::performClockCycle(UfController& ufCon, RegResController& regCon, int clockCycle){
 	
-	for (int i=0; i<this->instructions.size(); i++){
+	for (int i=0; i<instructions.size(); i++){
 		
 		switch(instructions[i].currStage){
 			case DISPATCH:	//then will try to read
