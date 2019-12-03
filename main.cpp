@@ -6,7 +6,7 @@
 screenManager sm;
 
 tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
-	int posX = 0;//position for the table
+	int posX = *nextX;//position for the table
 	int posY = 0;
 	std::vector<std::string> columns = {
 		"Instruction ID",
@@ -22,7 +22,7 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 	//creates the table itself
 	tableManager<std::string> tm(posX, posY, columns, lines, data);
 	*nextY = 2*lines.size() + 3; //new value of X, for the next column
-	*nextX = 1;
+	*nextX += 1;
 	for(auto s:columns){
 		*nextX += s.length() + 1;
 	}
@@ -30,8 +30,8 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 }
 
 tableManager<std::string> create_regsters_table(int* nextX, int* nextY){
-	int posX = *nextX;
-	int posY = 0;
+	int posX = 0;
+	int posY = *nextY;
 	std::vector<std::string> columns = {"  "};
 	for(auto regName:regs){ //add register names as column names, with the correct padding
 		std::stringstream ss;
@@ -57,25 +57,67 @@ tableManager<std::string> create_regsters_table(int* nextX, int* nextY){
 tableManager<std::string> create_clock_table(int *nextX, int *nextY){
 	int x,y;
 	getmaxyx(stdscr, y, x); //gets the maximum height and width of the screen
-	int posY = 0;
+	int posY = y - 5; //sticks to the bottom of the screen
 	std::vector<std::string> columns = {"Clock Cycle"};
 	int posX = x - columns[0].length() - 2;//sticks the table to the right of the screen
 	std::vector<std::string> lines = {"0"};
 	std::vector<std::vector<std::string> > data;
 
 	tableManager<std::string> tm(posX, posY, columns, lines, data);
-	*nextX = 0;
+	return tm;
+}
+
+tableManager<std::string> create_uf_controller_table(int *nextX, int *nextY){
+	int posY = *nextY;
+	int posX = *nextX;
+
+	std::vector<std::string> columns = {
+		" Name ",
+		"Busy",
+		"op Name",
+		" fi",
+		" fj",
+		" fk",
+		"  Qj  ",
+		"  Qk  ",
+		"Rj",
+		"Rk"
+	};
+
+	std::vector<std::string> lines={
+		"Int1",
+		"Int2",
+		"Float1",
+		"Float2"
+	};
+	std::vector<std::string> v(1,"0");
+	while(v.size() < (columns.size() - 1)){
+		v.push_back(" ");
+	}
+	std::vector<std::vector<std::string> > data(4,v);
+	tableManager<std::string> tm(posX, posY, columns, lines, data);
+	*nextY += 2*lines.size() + 3;
+	*nextX = 1;
+	for(auto s:columns){
+		*nextX += s.length() + 1;
+	}
 	return tm;
 }
 
 int main(){
 	//coordinates for next table creation
-	int nextX, nextY;
+	int nextX = 0, nextY = 0;
+
+	
+
+	//creates fourth table, for uf controller
+	tableManager<std::string> tm_uf = create_uf_controller_table(&nextX, &nextY);
+	UfController uc(tm_uf);
+	getch();
 
 	//creates first table, for the pipeline information
 	tableManager<std::string> tm1 = create_pipeline_table(&nextX, &nextY);
 	PipelineController pc(tm1);
-	sm.mvprint_to_panel(-1, nextX,nextY, "%d %d", nextX, nextY);
 	getch();
 
 	//creates second table, for registers information
@@ -86,5 +128,7 @@ int main(){
 	//creates third table, to show the clock cycle
 	tableManager<std::string> clock = create_clock_table(&nextX, &nextY);
 	getch();
+	
+	DispatchController dc(pc, uc, rrc);
 	return 0;
 }
