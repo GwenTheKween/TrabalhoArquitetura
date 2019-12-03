@@ -13,6 +13,8 @@ typedef struct{
 	int stage[4];	//clock cicle for each stage(dispatch, readOp, exec, writeBack)
 	int currStage, execEnd;
 	bool finishedExec;
+	bool floating; //if the instruction uses floating point FUs
+	ufLine *UF; //which UF is executing the current instruction
 } pipeLine; 	//line of the pipeline :)
 
 class PipelineController{
@@ -28,7 +30,7 @@ public:
 	PipelineController(tableManager<std::string>& tm);
 
 	//adds new line of intruction
-	void dispatchInstruction(int instructionId, std::string opName, int clockCycle);
+	void dispatchInstruction(int instructionId, std::string opName, bool floating, ufLine* uf, int clockCycle);
 
 	//calls ufController method to read operands. Updates pipeline and window?
 	bool tryToReadOperands(UfController& ufCon, pipeLine &line, int clockCycle);

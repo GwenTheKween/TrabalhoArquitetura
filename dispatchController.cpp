@@ -72,11 +72,11 @@ int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineControlle
 				regCon->populateReg(nextInstruction.rd, ufReturned->ufName);
 
 				//finally, send dispatched instruction to the pipeline
-				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
+				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName,nextInstruction.useFp, ufReturned, clockCycle);
 				instructionQueue.pop();
 
 				return nextInstruction.id;
-			}catch(const logic_error e){}
+			}catch(const logic_error& e){}
 		}
 	}else{
 		if( regCon->isRegAvailable(nextInstruction.rt) ){
@@ -89,11 +89,11 @@ int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineControlle
 				regCon->populateReg(nextInstruction.rt, ufReturned->ufName);
 
 				//finally, send dispatched instruction to the pipeline
-				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
+				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, nextInstruction.useFp, ufReturned, clockCycle);
 				
 				instructionQueue.pop();
 				return nextInstruction.id;
-			}catch(const logic_error e){}
+			}catch(const logic_error& e){}
 		}
 	}
 	return -1;

@@ -27,7 +27,7 @@ PipelineController::PipelineController(tableManager<std::string>& tm):
 	gui(tm){}
 
 //adds new line of intruction
-void PipelineController::dispatchInstruction(int instructionId, std::string opName, int clockCycle){
+void PipelineController::dispatchInstruction(int instructionId, std::string opName, bool floating, ufLine* uf, int clockCycle){
 	
 	//copying values to new entry
 	pipeLine newInstruction;
@@ -39,6 +39,8 @@ void PipelineController::dispatchInstruction(int instructionId, std::string opNa
 	newInstruction.stage[EXECUTION] = -1;
 	newInstruction.stage[WRITE_BACK] = -1;
 	newInstruction.finishedExec = false;
+	newInstruction.floating = floating;
+	newInstruction.UF = uf;
 
 	//updates the screen
 	//CHAGNE THE LINE NUMBER TO AN UNORDERED MAP THAT STORES ID AND LINE NUMBER
@@ -71,7 +73,7 @@ bool PipelineController::runExecution(UfController& ufCon, pipeLine &line, int c
 	}
 	
 	//will perform 1 cycle of execution	
-	if (ufCon.runExecution(line.instructionId)){
+	if (ufCon.runExecution(line.UF)){
 		//then execution finished
 		line.finishedExec = true;
 		line.execEnd = clockCycle;
@@ -82,7 +84,7 @@ bool PipelineController::runExecution(UfController& ufCon, pipeLine &line, int c
 //calls ufController method to check if write is available and if it is
 //will update pipeline and call register result method to update register 
 bool PipelineController::tryToWriteResult(RegResController& regCon, UfController& ufCon, pipeLine &line, int clockCycle){
-	
+	sm.mvprint_to_panel(-1,30,0,"its johnny");
 	if(ufCon.isWriteAvailable(line.instructionId)){
 		//find register name
 		string regName = ufCon.getDestReg(line.instructionId);
