@@ -1,5 +1,5 @@
 COMP = g++
-COMP_FLAGS = -c -g
+COMP_FLAGS = -c -Wall -Wextra -Wpedantic
 LINK_FLAGS = -lpanel -lncurses -o
 EXE = scoreboarding.out
 SRC = $(wildcard *.cpp)
@@ -23,5 +23,6 @@ include $(DEPS)
 run: $(EXE)
 	@./$(EXE)
 
+debug: COMP_FLAGS += -g
 debug: clean all
 	gdb ./$(EXE)
