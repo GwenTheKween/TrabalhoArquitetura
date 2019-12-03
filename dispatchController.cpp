@@ -58,9 +58,7 @@ void DispatchController::loadInstructions(){
 int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineController* pipe, RegResController* regCon, int clockCycle){
 	
 	instruction nextInstruction = instructionQueue.front();
-	instructionQueue.pop();
 
-	
 	//check if destiny register is free
 	//but first, check if is an I type instruction or an R type
 	if(nextInstruction.isRtype){
@@ -75,7 +73,8 @@ int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineControlle
 
 				//finally, send dispatched instruction to the pipeline
 				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
-				
+				instructionQueue.pop();
+
 				return nextInstruction.id;
 			}catch(const logic_error e){}
 		}
@@ -92,6 +91,7 @@ int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineControlle
 				//finally, send dispatched instruction to the pipeline
 				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, clockCycle);
 				
+				instructionQueue.pop();
 				return nextInstruction.id;
 			}catch(const logic_error e){}
 		}
