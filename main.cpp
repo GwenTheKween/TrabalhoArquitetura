@@ -129,8 +129,12 @@ int main(){
 
 
 	int clockCycle = 0;
-	while(true){
-		getch();
+	char input='n';
+	int x,y;
+	getmaxyx(stdscr,y,x);
+	sm.mvprint_to_panel(-1,y-1,0,"press q to exit");
+	while(input != 'q'){
+		input = getch();
 		//main cycle
 		//the first thing done is to try and dispatch a new instruction
 		dc.tryToDispatchNext(&uc, &pc, &rrc, clockCycle);
