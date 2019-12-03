@@ -104,14 +104,16 @@ bool PipelineController::tryToWriteResult(RegResController& regCon, UfController
 //will try to perform next stage for every instruction in the pipeline
 void PipelineController::performClockCycle(UfController& ufCon, RegResController& regCon, int clockCycle){
 	
-	for (int i=0; i<instructions.size(); i++){
+	for (size_t i=0; i<instructions.size(); i++){
 		bool changed = false;
 		switch(instructions[i].currStage){
 			case DISPATCH:	//then will try to read
-				changed = tryToReadOperands(ufCon, instructions[i], clockCycle);
+				//guarantees that it wont read operands in the same clock cycle
+				if(instructions[i].stage[DISPATCH] != clockCycle) 
+					changed = tryToReadOperands(ufCon, instructions[i], clockCycle);
 				break;
 
-			case READ_OP:  //then will star execution
+			case READ_OP:  //then will start execution
 				changed = runExecution(ufCon, instructions[i], clockCycle);
 				break;
 

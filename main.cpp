@@ -141,6 +141,7 @@ int main(){
 
 		pc.performClockCycle(uc, rrc, clockCycle);
 
+		uc.performClockTick();
 		//then we update the clock cycle
 		clockCycle++;
 		std::stringstream ss;

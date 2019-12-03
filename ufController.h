@@ -9,9 +9,9 @@
 #include "tableManager.h"
 
 struct ufLine{
-	std::string ufName, opName, fi, fj, fk, qj, next_qj, qk, next_qk;
-	int rj, next_rj, rk, next_rk, instructionId, execCyclesLeft;
-	bool busy, next_busy;
+	std::string ufName, opName, fi, fj, fk, qj, qk;
+	int rj, rk, instructionId, execCyclesLeft;
+	bool busy;
 };
 
 class UfController{

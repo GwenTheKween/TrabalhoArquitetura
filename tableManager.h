@@ -64,7 +64,7 @@ template<class T> tableManager<T>::tableManager(
 	//we can calculate the height and width needed for the panel in the following way:
 	int height = 2*lineNames.size() + 3; //for every line containing data, there's one line separator. Besides it needs a header line and 2 for the border
 	int width = 1; //we start at 1 to account for the border
-	for(int i = 0; i < columnNames.size(); i++){
+	for(size_t i = 0; i < columnNames.size(); i++){
 		width += columnNames[i].length() + 1; //the length of each column and the separator
 	}
 	//now it creates a panel
@@ -76,7 +76,7 @@ template<class T> tableManager<T>::tableManager(
 	//first line of the table, just the header
 	header = columnNames[0];
 	columnWidths[0] = columnNames[0].length();
-	for(int i = 1; i<columnNames.size(); i++){
+	for(size_t i = 1; i<columnNames.size(); i++){
 		header += "|" + columnNames[i];
 		columnWidths[i] = columnNames[i].length();
 	}
@@ -85,12 +85,12 @@ template<class T> tableManager<T>::tableManager(
 
 	//formats the line separator, which is just a bunch of "-------" with the same size as a regular line
 	std::string s = header;
-	for(int j = 0; j<s.size(); j++){
+	for(size_t j = 0; j<s.size(); j++){
 		if(s[j] != '|') s[j] = '-';
 	}
 
 	//Finally, we format the rest of the lines of the table, and print them as the are finished
-	for(int i=0; i<lineNames.size(); i++){
+	for(size_t i=0; i<lineNames.size(); i++){
 		std::stringstream ss;
 		//we print the line separator at the begining of the loop to ease the formatting
 		sm.mvprint_to_panel(panel, 2*i + 2, 1, s.c_str());
@@ -98,7 +98,7 @@ template<class T> tableManager<T>::tableManager(
 		ss.width(columnWidths[0]);
 		ss << lineNames[i];
 		//then calculate the amount of padding for all columns, excluding the first
-		for(int j=1; j<columnNames.size(); j++){
+		for(size_t j=1; j<columnNames.size(); j++){
 			ss << '|';
 			ss.width(columnWidths[j]);
 			ss << d[i][j-1];
@@ -139,7 +139,7 @@ template<class T> void tableManager<T>::update_line(int line, std::string lineNa
 	std::stringstream ss;
 	ss.width(columnWidths[0]);
 	ss << lineName;
-	for(int i = 1; i<columnWidths.size(); i++){
+	for(size_t i = 1; i<columnWidths.size(); i++){
 		ss << '|';
 		ss.width(columnWidths[i]);
 		ss << d[i-1];

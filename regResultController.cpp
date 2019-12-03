@@ -5,7 +5,7 @@ std::vector<std::string> regs = {"F0", "F2", "F4", "F6", "F8", "F10", "F12"};
 using namespace std;
 RegResController::RegResController(tableManager<string>& tm):
 	gui(tm){
-    for(int i = 0; i < regs.size(); i++){
+    for(size_t i = 0; i < regs.size(); i++){
         registers[regs[i]]= "NULL"; // registers available have a NULL string
     }
     return;
@@ -22,11 +22,24 @@ string RegResController::getRegister(string regName){
 }
 
 void RegResController::populateReg(string regName, string fuName){
+	update_table();
     registers[regName] = fuName;
     return;
 }
 
 void RegResController::clearReg(string regName){
+	update_table();
     registers[regName] = "NULL";
     return;
+}
+
+void RegResController::update_table(){
+	vector<string> data;
+	for(auto it = registers.begin(); it != registers.end(); it++){
+		if(it->second != "NULL")
+			data.push_back(it->second);
+		else
+			data.push_back(" ");
+	}
+	gui.update_line(0,"FU",data);
 }
