@@ -6,6 +6,7 @@
 #include <exception>
 #include "instructionStruct.h"
 #include "regResultController.h"
+#include "tableManager.h"
 
 struct ufLine{
 	std::string ufName, opName, fi, fj, fk, qj, next_qj, qk, next_qk;
@@ -26,9 +27,10 @@ private:
 	std::vector<ufLine> ufsInt;
 	std::vector<ufLine> ufsFloat;
 	std::unordered_map<std::string, int> nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mul", 10}, {"Div", 40}};
+	tableManager<std::string> gui;
 	//talvez manter um vetor pras livres e um pras ocupadas? 
 public:
-	UfController();
+	UfController(tableManager<std::string> tm);
 	
 	//checks if a compatible fu is available
 	ufLine hasUfAvailable(bool needsFloatingPointUf);
