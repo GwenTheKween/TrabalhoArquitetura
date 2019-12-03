@@ -15,12 +15,12 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 		"Exec Complete",
 		"Write Result"
 	}; //column names for the final table
-	std::vector<std::string> lines = {"1","2","3","4","5"}; //line names for the final table
+	std::vector<std::string> lines = {"0","1","2","3","4"}; //line names for the final table
 	std::vector<std::string> tmp(columns.size() - 1," ");//temporary vector, to make matrix creation more readable
 	std::vector<std::vector<std::string> > data(lines.size(), tmp);//creates the matrix with the printed data
 
 	//creates the table itself
-	tableManager<std::string> tm(posX, posY, columns, lines, data);
+;	tableManager<std::string> tm(posX, posY, columns, lines, data);
 	*nextY = 2*lines.size() + 3; //new value of X, for the next column
 	*nextX += 1;
 	for(auto s:columns){
@@ -122,21 +122,32 @@ int main(){
 
 	//creates third table, to show the clock cycle
 	tableManager<std::string> clock = create_clock_table();
+	std::vector<std::string> empty;
 
 
 	DispatchController dc;
 
+
 	int clockCycle = 0;
-	while(true){
+	char input='n';
+	int x,y;
+	getmaxyx(stdscr,y,x);
+	sm.mvprint_to_panel(-1,y-1,0,"press q to exit");
+	while(input != 'q'){
+		input = getch();
 		//main cycle
 		//the first thing done is to try and dispatch a new instruction
-		dc.tryToDispatchNext(uc, pc, rrc, clockCycle);
+		dc.tryToDispatchNext(&uc, &pc, &rrc, clockCycle);
 
-		//pc.performClockCycle(uc, rrc, clockCycle);
+		pc.performClockCycle(uc, rrc, clockCycle);
 
+		uc.performClockTick();
 		//then we update the clock cycle
 		clockCycle++;
-		break;
+		std::stringstream ss;
+		ss << clockCycle;
+		clock.update_line(0,ss.str(),empty);
+		//break;
 	}
 	return 0;
 }

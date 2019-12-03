@@ -139,7 +139,7 @@ template<class T> void tableManager<T>::update_line(int line, std::string lineNa
 	std::stringstream ss;
 	ss.width(columnWidths[0]);
 	ss << lineName;
-	for(int i = 1; i<columnWidths.size(); i++){
+	for(size_t i = 1; i<columnWidths.size(); i++){
 		ss << '|';
 		ss.width(columnWidths[i]);
 		ss << d[i-1];
