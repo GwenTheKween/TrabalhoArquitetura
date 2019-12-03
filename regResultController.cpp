@@ -5,7 +5,7 @@ std::vector<std::string> regs = {"F0", "F2", "F4", "F6", "F8", "F10", "F12"};
 using namespace std;
 RegResController::RegResController(tableManager<string>& tm):
 	gui(tm){
-    for(int i = 0; i < regs.size(); i++){
+    for(size_t i = 0; i < regs.size(); i++){
         registers[regs[i]]= "NULL"; // registers available have a NULL string
     }
     return;

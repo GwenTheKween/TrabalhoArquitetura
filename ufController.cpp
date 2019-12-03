@@ -137,16 +137,14 @@ bool UfController::runExecution(int instructionId){
 bool UfController::isWriteAvailable(int instructionId){
 	ufLine FU;
 	FU.ufName = "not found";
-	bool Fp = false;
 	//first checks if the instruction refers to an integer FU
-	for(int i = 0; i<ufsInt.size(); i++){
+	for(size_t i = 0; i < ufsInt.size(); i++){
 		if(ufsInt[i].instructionId == instructionId){
 			FU = ufsInt[i];
 		}
 	}
 	if(FU.ufName == "not found"){
-		Fp = true;
-		for(int i = 0; i < ufsFloat.size(); i++){
+		for(size_t i = 0; i < ufsFloat.size(); i++){
 			if(ufsFloat[i].instructionId == instructionId){
 				FU = ufsFloat[i];
 			}

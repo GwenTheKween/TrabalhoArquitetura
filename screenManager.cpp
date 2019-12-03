@@ -104,7 +104,7 @@ void screenManager::removePanel(int id){
 }
 
 void screenManager::clear(){
-	for(int i=0;i<ids.size(); i++){
+	for(size_t i=0; i < ids.size(); i++){
 		removePanel(ids[i]);
 	}
 }

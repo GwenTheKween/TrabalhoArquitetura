@@ -70,7 +70,7 @@ void PipelineController::tryToWriteResult(RegResController& regCon, UfController
 //will try to perform next stage for every instruction in the pipeline
 void PipelineController::performClockCycle(UfController& ufCon, RegResController& regCon, int clockCycle){
 	
-	for (int i=0; i<this->instructions.size(); i++){
+	for (size_t i=0; i < this->instructions.size(); i++){
 		
 		switch(instructions[i].currStage){
 			case DISPATCH:	//then will try to read
