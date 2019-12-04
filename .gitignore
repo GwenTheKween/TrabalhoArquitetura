@@ -35,4 +35,7 @@
 vgcore.*
 
 # ccls folder
-/.ccls-cache
+.ccls-cache/
+
+# vscode folder
+.vscode/
