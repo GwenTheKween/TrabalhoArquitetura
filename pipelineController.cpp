@@ -66,21 +66,23 @@ bool PipelineController::runExecution(UfController& ufCon, pipeLine &line, int c
 	
 	//first time running execution
 	if( line.currStage == READ_OP ){
-		line.stage[EXECUTION] = clockCycle;
 		line.currStage = EXECUTION;
 		if (ufCon.runExecution(line.UF)){
 			//then execution finished in only 1 cycle
+			line.stage[EXECUTION] = clockCycle;
 			line.finishedExec = true;
 			line.execEnd = clockCycle;
 		}
 		return true;
 	}
-	
+
 	//will perform 1 cycle of execution	
 	if (ufCon.runExecution(line.UF)){
 		//then execution finished
+		line.stage[EXECUTION] = clockCycle;
 		line.finishedExec = true;
 		line.execEnd = clockCycle;
+		return true;
 	}
 	return false;
 }
