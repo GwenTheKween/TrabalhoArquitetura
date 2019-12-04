@@ -10,7 +10,7 @@ $(EXE): $(OBJS) $(DEPS)
 	$(COMP) $(OBJS) $(LINK_FLAGS) $(EXE) 
 
 clean:
-	rm $(OBJS) $(DEPS) $(EXE)
+	rm -f $(OBJS) $(DEPS) $(EXE)
 
 %.d:%.cpp
 	$(COMP) -MM $< -o $@
@@ -24,5 +24,5 @@ run: $(EXE)
 	@./$(EXE)
 
 debug: COMP_FLAGS += -g
-debug: clean all
+debug: clean $(EXE)
 	gdb ./$(EXE)
