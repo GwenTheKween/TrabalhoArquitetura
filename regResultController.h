@@ -12,7 +12,7 @@ class RegResController{
 
 private:
 	//will map register to fu using it
-	std::map <std::string, std::string> registers;	
+	std::map <std::string, std::string> registers, registers_next;	
 
 	tableManager<std::string> gui;
 	//the dispatch will have to check availability first so no conflict happens because of the writeback
@@ -33,6 +33,8 @@ public:
 
 	//used when there might be new information to be displayed
 	void update_table();
+	
+	void performClockTick();
 };
 
 #endif // REG_RES_CONTROLLER

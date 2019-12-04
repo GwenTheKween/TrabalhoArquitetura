@@ -7,6 +7,7 @@ RegResController::RegResController(tableManager<string>& tm):
 	gui(tm){
     for(size_t i = 0; i < regs.size(); i++){
         registers[regs[i]] = "NULL"; // registers available have a NULL string
+        registers_next[regs[i]] = "NULL"; // used to prevent early write
     }
     return;
 }
@@ -22,14 +23,12 @@ string RegResController::getRegister(string regName){
 }
 
 void RegResController::populateReg(string regName, string fuName){
-	registers[regName] = fuName;
-	update_table();
+	registers_next[regName] = fuName;
 	return;
 }
 
 void RegResController::clearReg(string regName){
-	registers[regName] = "NULL";
-	update_table();
+	registers_next[regName] = "NULL";
 	return;
 }
 
@@ -42,4 +41,12 @@ void RegResController::update_table(){
 			data.push_back(" ");
 	}
 	gui.update_line(0,"FU",data);
+}
+
+void RegResController::performClockTick(){
+	
+	for(auto& reg : registers){
+		reg.second = registers_next[reg.first];
+	}
+	update_table();
 }

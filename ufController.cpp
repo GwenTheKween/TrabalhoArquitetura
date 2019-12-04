@@ -98,7 +98,7 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 	}
 	else
 	{
-		if(dispatchedInstruction.opName != "SW")
+		if(dispatchedInstruction.opName != "Store")
 		{
 			uf->fi = dispatchedInstruction.rt;
 			uf->fj = dispatchedInstruction.rs;
@@ -172,41 +172,14 @@ string UfController::getDestReg(int instructionId){
 
 //will change UF's status and update UFs waiting to read register
 void UfController::clearAndUpdateUf(ufLine* uf){
-	for(auto& ufInt : ufsInt)
-	{
-		if(ufInt.ufName != uf->ufName)
-		{
-			if(ufInt.qj == uf->ufName){
-				ufInt.rj_next = 1;
-				ufInt.qj_next = "0";
-			}
-			if(ufInt.qk == uf->ufName){
-				ufInt.rk_next = 1;
-				ufInt.qk_next = "0";
-			}
-		}
-	}
-	for(auto& ufFloat : ufsFloat)
-	{
-		if(ufFloat.ufName != uf->ufName)
-		{
-			if(ufFloat.qj == uf->ufName){
-				ufFloat.rj_next = 1;
-				ufFloat.qj_next = "0";
-			}
-			if(ufFloat.qk == uf->ufName){
-				ufFloat.rk_next = 1;
-				ufFloat.qk_next = "0";
-			}
-		}
-	}
-	uf->busy = false;
-	uf->opName = uf->fi = uf->fj = uf->fk = uf->qj = uf->qk = uf->qj_next = uf->qk_next = "";
-	uf->rj_next = uf->rk = uf->rj = uf->rk_next = uf->instructionId = uf->execCyclesLeft = 0;
+	
+	ufsToClear.push_back(*uf);
+	
 }
 
 //will update attributes with the values modified in the last clock cicle
 void UfController::performClockTick(){
+
 	int line = 0;
 	for(auto& uf : ufsInt){
 		uf.qj = uf.qj_next;
@@ -222,4 +195,66 @@ void UfController::performClockTick(){
 		uf.rk = uf.rk_next;
 		gui.update_line(line++, uf.ufName, table_data(uf));
 	}
+	
+	for(auto& uf : ufsToClear){
+		line = 0;
+		for(auto& ufInt : ufsInt)
+		{
+			
+			bool altered = false;
+			if(ufInt.ufName != uf.ufName)
+			{
+				if(ufInt.qj == uf.ufName){
+					ufInt.rj = 1;
+					ufInt.qj = "0";
+					altered = true;
+				}
+				if(ufInt.qk == uf.ufName){
+					ufInt.rk = 1;
+					ufInt.qk = "0";
+					altered = true;
+				}
+			}
+			else{
+				ufInt.busy = false;
+				ufInt.opName = ufInt.fi = ufInt.fj = ufInt.fk = ufInt.qj = ufInt.qk = ufInt.qj = ufInt.qk = "";
+				ufInt.rj = ufInt.rk = ufInt.rj = ufInt.rk = ufInt.instructionId = ufInt.execCyclesLeft = 0;
+				altered = true;
+			}
+			if (altered)
+				gui.update_line(line, ufInt.ufName, table_data(ufInt));
+			line++;
+		}
+		for(auto& ufFloat : ufsFloat)
+		{
+			bool altered = false;
+			if(ufFloat.ufName != uf.ufName)
+			{
+				if(ufFloat.qj == uf.ufName){
+					ufFloat.rj = 1;
+					ufFloat.qj = "0";
+					altered = true;
+				}
+				if(ufFloat.qk == uf.ufName){
+					ufFloat.rk = 1;
+					ufFloat.qk = "0";
+					altered = true;
+				}
+			}
+			else{
+				ufFloat.busy = false;
+				ufFloat.opName = ufFloat.fi = ufFloat.fj = ufFloat.fk = ufFloat.qj = ufFloat.qk = ufFloat.qj = ufFloat.qk = "";
+				ufFloat.rj = ufFloat.rk = ufFloat.rj = ufFloat.rk = ufFloat.instructionId = ufFloat.execCyclesLeft = 0;
+				altered = true;
+			}
+			if(altered)
+				gui.update_line(line, ufFloat.ufName, table_data(ufFloat));
+			line++;
+		}
+	}
+	
+	ufsToClear.clear();
+
+
+
 }
