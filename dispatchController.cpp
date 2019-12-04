@@ -42,14 +42,26 @@ void DispatchController::loadInstructions(){
 			newInstruction.useFp = false;
 		}//else invalid instruction.. TODO
 		
-		//rs rt rd or imm
-		newInstruction.rs = value2;
-		newInstruction.rt = value3;
-		if(newInstruction.isRtype)
-			newInstruction.rd = value4;
-		else
+		//always rd rs rt
+		if(newInstruction.isRtype){	
+			newInstruction.rs = value3;
+			newInstruction.rt = value4;
+			newInstruction.rd = value2;
+		}
+		else{
+			//SW rs rt immed
+			if(newInstruction.opName == "Store"){
+				newInstruction.rs = value2;
+				newInstruction.rt = value3;
+			}
+			//LW rt rs immed... ADDI rt rs immed
+			else{
+				newInstruction.rt = value2;
+				newInstruction.rs = value3;
+			}
+			//immed always the last
 			newInstruction.immed = stoi(value4);
-		
+		}
 		//add to queue
 		instructionQueue.push(newInstruction);
 	}

@@ -100,19 +100,16 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 		{
 			uf->fi = dispatchedInstruction.rt;
 			uf->fj = dispatchedInstruction.rs;
-
-			uf->qk = "0";
-			uf->rk = 1;
 		}
 		else
 		{
 			uf->fi = "-";
 			uf->fj = dispatchedInstruction.rs;
 			uf->fk = dispatchedInstruction.rt;
-
-			uf->qk = regRes->isRegAvailable(uf->fk) ? "0" : regRes->getRegister(uf->fk);
-			uf->rk = (uf->qk == "0" ? 1 : 0);
 		}
+			//not used for i-type
+			uf->qk = "0";
+			uf->rk = 1;
 	}
 	uf->qj = regRes->isRegAvailable(uf->fj) ? "0" : regRes->getRegister(uf->fj);
 	uf->rj = (uf->qj == "0" ? 1 : 0);
