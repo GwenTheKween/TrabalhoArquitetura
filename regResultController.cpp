@@ -28,9 +28,9 @@ void RegResController::populateReg(string regName, string fuName){
 }
 
 void RegResController::clearReg(string regName){
+	registers[regName] = "NULL";
 	update_table();
-    registers[regName] = "NULL";
-    return;
+	return;
 }
 
 void RegResController::update_table(){
