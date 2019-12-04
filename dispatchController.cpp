@@ -98,7 +98,8 @@ int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineControlle
 				ufReturned = ufCon->hasUfAvailable(nextInstruction.useFp);
 				//then will populate uf and register status
 				ufCon->populateUf(ufReturned, nextInstruction, regCon);
-				regCon->populateReg(nextInstruction.rt, ufReturned->ufName);
+				if( nextInstruction.opName != "Store" )
+					regCon->populateReg(nextInstruction.rt, ufReturned->ufName);
 
 				//finally, send dispatched instruction to the pipeline
 				pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, nextInstruction.useFp, ufReturned, clockCycle);
