@@ -44,7 +44,8 @@ UfController::UfController(tableManager<std::string> tm):
 	uf.ufName = "Int1";
 	uf.busy = false;
 	uf.opName = uf.fi = uf.fj = uf.fk = uf.qj = uf.qk = uf.qj_next = uf.qk_next = "";
-	uf.rj = uf.rk = uf.rk_next = uf.rj_next= uf.instructionId = uf.execCyclesLeft = 0;
+	uf.rj = uf.rk = uf.rk_next = uf.rj_next = uf.execCyclesLeft = 0;
+	uf.instructionId = -1;
 
 	ufsInt.push_back(uf);
 
@@ -138,12 +139,12 @@ bool UfController::runExecution(ufLine* uf){
 
 //returns false if the informed register is still waiting to be read by a UF otherwise returns true
 bool UfController::isWriteAvailable(ufLine* FU){
-	for(auto f:ufsInt){
+	for(const auto& f:ufsInt){
 		if(!(((f.fj != FU->fi) || f.rj == 0) && ((f.fk != FU->fi) || f.rk == 0))){
 			return false;
 		}
 	}
-	for(auto f:ufsFloat){
+	for(const auto& f:ufsFloat){
 		if(!(((f.fj != FU->fi) || f.rj == 0) && ((f.fk != FU->fi) || f.rk == 0))){
 			return false;
 		}
@@ -153,14 +154,14 @@ bool UfController::isWriteAvailable(ufLine* FU){
 
 //returns the name of the destination register
 string UfController::getDestReg(int instructionId){
-	for(auto uf : ufsInt)
+	for(const auto& uf : ufsInt)
 	{
 		if(uf.instructionId == instructionId)
 		{
 			return uf.fi;
 		}
 	}
-	for(auto uf : ufsFloat)
+	for(const auto& uf : ufsFloat)
 	{
 		if(uf.instructionId == instructionId)
 		{
@@ -177,7 +178,8 @@ void UfController::clearAndUpdateUf(ufLine* uf){
 
 	uf->busy = false;
 	uf->opName = uf->fi = uf->fj = uf->fk = uf->qj = uf->qk = uf->qj_next = uf->qk_next = "";
-	uf->rj_next = uf->rk = uf->rj = uf->rk_next = uf->instructionId = uf->execCyclesLeft = 0;
+	uf->rj_next = uf->rk = uf->rj = uf->rk_next = uf->execCyclesLeft = 0;
+	uf->instructionId = -1;
 }
 
 //will update attributes with the values modified in the last clock cicle
@@ -201,7 +203,7 @@ void UfController::performClockTick(){
 	}
 	
 	//then try to solve read dependencies
-	for(auto ufCleared : ufsCleared){
+	for(const auto& ufCleared : ufsCleared){
 		line = 0;	
 		for(auto& ufInt : ufsInt){
 			if(ufInt.ufName != ufCleared){
