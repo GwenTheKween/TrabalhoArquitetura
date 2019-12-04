@@ -1,12 +1,12 @@
 #include "regResultController.h"
 
-std::vector<std::string> regs = {"F0", "F2", "F4", "F6", "F8", "F10", "F12"};
+std::vector<std::string> regs = {"F0", "F1", "F2", "F3", "F4", "F5", "F6"};
 
 using namespace std;
 RegResController::RegResController(tableManager<string>& tm):
 	gui(tm){
     for(size_t i = 0; i < regs.size(); i++){
-        registers[regs[i]]= "NULL"; // registers available have a NULL string
+        registers[regs[i]] = "NULL"; // registers available have a NULL string
     }
     return;
 }
