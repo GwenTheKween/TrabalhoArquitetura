@@ -12,6 +12,8 @@
 #include "ufController.h"
 #include "instructionStruct.h"
 
+extern bool instructionsLeft;
+
 class DispatchController{
 	
 private:

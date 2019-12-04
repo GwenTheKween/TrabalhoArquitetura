@@ -4,6 +4,8 @@
 
 using namespace std;
 
+bool instructionsLeft = true;
+
 DispatchController::DispatchController(){
 	this->loadInstructions();
 }
@@ -111,6 +113,8 @@ int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineControlle
 				}catch(const logic_error& e){}
 			}
 		}
+	}else{
+		instructionsLeft = false; //there are no isntructions left to dispatch
 	}
 	return -1;
 }

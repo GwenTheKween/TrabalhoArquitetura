@@ -81,30 +81,40 @@ void screenManager::mvprint_to_panel(int id, int y, int x, const char* fmt, ...)
 }
 
 void screenManager::removePanel(int id){
-	//delete panel
-	del_panel(panels[id].pan);
+	if(id >= 0){
 
-	//delete window border
-	wborder(panels[id].win,' ',' ',' ',' ',' ',' ',' ',' ');
-	update_panels();
-	doupdate();
-	//delete window itself
-	delwin(panels[id].win);
-
-	//set all the info to 0
-	memset(&panels[id],0,sizeof(panelStruct));
-
-	for(std::vector<int>::iterator it=ids.begin();it!=ids.end(); it++){
-		if(*it == id){
-			ids.erase(it);
-			break;
+		//delete panel
+		del_panel(panels[id].pan);
+	
+		//delete window border
+		wborder(panels[id].win,' ',' ',' ',' ',' ',' ',' ',' ');
+		//delete window itself
+		delwin(panels[id].win);
+	
+		//set all the info to 0
+		memset(&panels[id],0,sizeof(panelStruct));
+	
+		for(std::vector<int>::iterator it=ids.begin();it!=ids.end(); it++){
+			if(*it == id){
+				ids.erase(it);
+				break;
+			}
 		}
+		panels.erase(id);
+		update_panels();
+		doupdate();
 	}
-	panels.erase(id);
 }
 
 void screenManager::clear(){
 	for(size_t i=0; i < ids.size(); i++){
 		removePanel(ids[i]);
+	}
+}
+
+void screenManager::clear_screen(){
+	std::string cl(width, ' ');
+	for(int h = 0; h < height; h++){
+		mvprintw(h,0,"%s",cl.c_str());
 	}
 }

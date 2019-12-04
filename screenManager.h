@@ -34,8 +34,10 @@ public:
 
 	//remove a single panel
 	void removePanel(int id);
-	//clear all panels and windows
+	//clear all panels and windows 
 	void clear();
+	void clear_screen();
+
 };
 
 extern screenManager sm;

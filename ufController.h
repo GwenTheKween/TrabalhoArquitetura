@@ -29,6 +29,8 @@ private:
 
 public:
 	UfController(tableManager<std::string> tm);
+
+	~UfController();
 	
 	//checks if a compatible fu is available
 	ufLine* hasUfAvailable(bool needsFloatingPointUf);

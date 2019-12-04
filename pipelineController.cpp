@@ -8,6 +8,8 @@ using namespace std;
 #define WRITE_BACK 3
 #define DONE 4
 
+bool instructionsExecuting = false;
+
 //============================================================================
 //auxiliary function
 vector<string> stages_to_vector(int stages[4]){
@@ -45,6 +47,9 @@ void PipelineController::dispatchInstruction(int instructionId, std::string opNa
 	newInstruction.UF = uf;
 
 	this->instructions.push_back(newInstruction);
+
+	//informs main function that there are instructions executing
+	instructionsExecuting = true;
 
 	//updates the screen
 	addTableEntry(instructionId);
@@ -130,6 +135,9 @@ void PipelineController::performClockCycle(UfController& ufCon, RegResController
 			case WRITE_BACK:
 				instructions[i].currStage = DONE;
 				removeTableEntry(instructions[i].instructionId);
+
+				//checks if there are other isntructions being executed
+				instructionsExecuting = !instructionLine.empty(); 
 				break;
 		}
 		if(changed){

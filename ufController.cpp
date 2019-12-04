@@ -60,6 +60,8 @@ UfController::UfController(tableManager<std::string> tm):
 	nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mult", 10}, {"Div", 40}};
 }
 
+UfController::~UfController(){}
+
 //checks if a compatible fu is available and return it
 ufLine* UfController::hasUfAvailable(bool needsFloatingPointUf){
 	if(needsFloatingPointUf){

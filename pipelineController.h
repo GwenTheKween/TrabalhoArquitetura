@@ -9,6 +9,8 @@
 #include "regResultController.h"
 #include "tableManager.h"
 
+extern bool instructionsExecuting;
+
 typedef struct{
 	int instructionId;
 	std::string opName;

@@ -23,7 +23,7 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 	std::vector<std::vector<std::string> > data(lines.size(), tmp);//creates the matrix with the printed data
 
 	//creates the table itself
-;	tableManager<std::string> tm(posX, posY, columns, lines, data);
+	tableManager<std::string> tm(posX, posY, columns, lines, data);
 	*nextY = 2*lines.size() + 3; //new value of X, for the next column
 	*nextX += 1;
 	for(auto s:columns){
@@ -107,7 +107,7 @@ tableManager<std::string> create_uf_controller_table(int *nextX, int *nextY){
 	return tm;
 }
 
-int main(){
+bool run_code(){
 	//coordinates for next table creation
 	int nextX = 0, nextY = 0;
 
@@ -130,26 +130,49 @@ int main(){
 
 	DispatchController dc;
 
-
 	int clockCycle = 0;
 	char input='n';
 	int x,y;
 	getmaxyx(stdscr,y,x);
 	sm.mvprint_to_panel(-1,y-1,0,"press q to exit");
-	while(input != 'q'){
+	while((instructionsLeft || instructionsExecuting) //while there are instructions to execute
+			&& (input != 'q')){ //and the user doesn't wish to exit
+
+		//run main loop; start by waiting input for the first step
 		input = getch();
 
+		//then try to dispatch the next instruction
 		dc.tryToDispatchNext(&uc, &pc, &rrc, clockCycle);
 		
+		//moves everything in the pipeline one cycle forward
 		pc.performClockCycle(uc, rrc, clockCycle);
 
+		//commits all changes
 		uc.performClockTick();
 		//then we update the clock cycle
 		clockCycle++;
+		//and the table it is in
 		std::stringstream ss;
 		ss << clockCycle;
 		clock.update_line(0,ss.str(),empty);
-		//break;
+	}
+
+	return (instructionsLeft == false) && (instructionsExecuting == false);
+}
+
+int main(){
+
+	run_code();
+	if((instructionsLeft == false) && (instructionsExecuting == false)){ //if the program executed untill the end
+		int x,y;
+		getmaxyx(stdscr,y,x);
+		std::string msg = "execution over, press q to exit";
+		sm.clear();
+		sm.mvprint_to_panel(-1,y/2,(x-msg.length())/2, "%s",msg.c_str()); //prints exit message
+		char input;
+		do{
+			input = getch();
+		}while(input != 'q');
 	}
 	return 0;
 }
