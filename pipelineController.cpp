@@ -85,7 +85,6 @@ bool PipelineController::runExecution(UfController& ufCon, pipeLine &line, int c
 //will update pipeline and call register result method to update register 
 bool PipelineController::tryToWriteResult(RegResController& regCon, UfController& ufCon, pipeLine &line, int clockCycle){
 	if(ufCon.isWriteAvailable(line.UF)){
-		sm.mvprint_to_panel(-1,30,0,"its johnny");
 		//find register name
 		string regName = ufCon.getDestReg(line.instructionId);
 		//clear FU and register status

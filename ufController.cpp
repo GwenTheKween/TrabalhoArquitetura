@@ -170,7 +170,7 @@ string UfController::getDestReg(int instructionId){
 
 //will change UF's status and update UFs waiting to read register
 void UfController::clearAndUpdateUf(ufLine* uf){
-	for(auto ufInt : ufsInt)
+	for(auto& ufInt : ufsInt)
 	{
 		if(ufInt.ufName != uf->ufName)
 		{
@@ -180,7 +180,7 @@ void UfController::clearAndUpdateUf(ufLine* uf){
 				ufInt.rk = 1;
 		}
 	}
-	for(auto ufFloat : ufsFloat)
+	for(auto& ufFloat : ufsFloat)
 	{
 		if(ufFloat.ufName != uf->ufName)
 		{
