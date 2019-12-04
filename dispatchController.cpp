@@ -95,7 +95,7 @@ int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineControlle
 				}catch(const logic_error& e){}
 			}
 		}else{
-			if( regCon->isRegAvailable(nextInstruction.rt) ){
+			if( nextInstruction.opName == "Store" || regCon->isRegAvailable(nextInstruction.rt) ){
 				//checking if a compatible fu is available
 				ufLine* ufReturned;
 				try{
