@@ -1,5 +1,5 @@
 #include "pipelineController.h"
-
+#include <iostream>
 using namespace std;
 
 #define DISPATCH 0
@@ -69,6 +69,11 @@ bool PipelineController::runExecution(UfController& ufCon, pipeLine &line, int c
 	if( line.currStage == READ_OP ){
 		line.stage[EXECUTION] = clockCycle;
 		line.currStage = EXECUTION;
+		if (ufCon.runExecution(line.UF)){
+			//then execution finished in only 1 cycle
+			line.finishedExec = true;
+			line.execEnd = clockCycle;
+		}
 		return true;
 	}
 	
@@ -116,6 +121,7 @@ void PipelineController::performClockCycle(UfController& ufCon, RegResController
 				break;
 
 			case EXECUTION:  //then will continue execution or try to write
+				
 				if(!instructions[i].finishedExec){
 					changed = runExecution(ufCon, instructions[i], clockCycle);
 				}
