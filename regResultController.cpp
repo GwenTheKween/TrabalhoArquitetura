@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "regResultController.h"
 
 std::vector<std::string> regs = {"F0", "F1", "F2", "F3", "F4", "F5", "F6"};
@@ -11,9 +12,16 @@ RegResController::RegResController(tableManager<string>& tm): gui(tm){
 }
 
 bool RegResController::isRegAvailable(string regName) {
-    string r = registers[regName];
-    if(r.compare("NULL") == 0) return 1;
-    else return 0;    
+	try
+	{
+		string r = registers.at(regName);
+		if(r.compare("NULL") == 0) return true;
+		else return false;
+	}
+	catch(std::out_of_range& e)
+	{
+		return true;
+	}
 }
 
 string RegResController::getRegister(string regName){

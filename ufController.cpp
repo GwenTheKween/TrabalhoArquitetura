@@ -92,16 +92,15 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 		uf->fi = dispatchedInstruction.rd;
 		uf->fj = dispatchedInstruction.rs;
 		uf->fk = dispatchedInstruction.rt;
-
-		uf->qk_next = regRes->isRegAvailable(uf->fk) ? "0" : regRes->getRegister(uf->fk);
-		uf->rk_next = (uf->qk_next == "0" ? 1 : 0);
 	}
+	// I-type
 	else
 	{
 		if(dispatchedInstruction.opName != "Store")
 		{
 			uf->fi = dispatchedInstruction.rt;
 			uf->fj = dispatchedInstruction.rs;
+			uf->fk = "-";
 		}
 		else
 		{
@@ -109,12 +108,11 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 			uf->fj = dispatchedInstruction.rs;
 			uf->fk = dispatchedInstruction.rt;
 		}
-			//not used for i-type
-			uf->qk_next = "0";
-			uf->rk_next = 1;
 	}
 	uf->qj_next = regRes->isRegAvailable(uf->fj) ? "0" : regRes->getRegister(uf->fj);
 	uf->rj_next = (uf->qj_next == "0" ? 1 : 0);
+	uf->qk_next = regRes->isRegAvailable(uf->fk) ? "0" : regRes->getRegister(uf->fk);
+	uf->rk_next = (uf->qk_next == "0" ? 1 : 0);
 
 }
 
