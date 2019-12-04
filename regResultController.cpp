@@ -22,9 +22,9 @@ string RegResController::getRegister(string regName){
 }
 
 void RegResController::populateReg(string regName, string fuName){
+	registers[regName] = fuName;
 	update_table();
-    registers[regName] = fuName;
-    return;
+	return;
 }
 
 void RegResController::clearReg(string regName){
