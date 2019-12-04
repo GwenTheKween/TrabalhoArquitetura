@@ -170,10 +170,29 @@ string UfController::getDestReg(int instructionId){
 
 //will change UF's status and update UFs waiting to read register
 void UfController::clearAndUpdateUf(ufLine* uf){
+	for(auto ufInt : ufsInt)
+	{
+		if(ufInt.ufName != uf->ufName)
+		{
+			if(ufInt.qj == uf->ufName)
+				ufInt.rj = 1;
+			if(ufInt.qk == uf->ufName)
+				ufInt.rk = 1;
+		}
+	}
+	for(auto ufFloat : ufsFloat)
+	{
+		if(ufFloat.ufName != uf->ufName)
+		{
+			if(ufFloat.qj == uf->ufName)
+				ufFloat.rj = 1;
+			if(ufFloat.qk == uf->ufName)
+				ufFloat.rk = 1;
+		}
+	}
 	uf->busy = false;
 	uf->opName = uf->fi = uf->fj = uf->fk = uf->qj = uf->qk = "";
 	uf->rj = uf->rk = uf->instructionId = uf->execCyclesLeft = 0;
-
 }
 
 //will update attributes with the values modified in the last clock cicle
