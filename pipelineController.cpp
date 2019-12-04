@@ -152,7 +152,6 @@ void PipelineController::updateTable(int instructionId){
 	int index = findInstByID(instructionId);
 	stringstream ss;
 	ss << instructionLine[line];
-	sm.mvprint_to_panel(-1,30,0,"updated line %d for instr with index %d",line, index);
 	gui.update_line(line, ss.str(), stages_to_vector(instructions[index].stage));
 }
 
