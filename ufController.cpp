@@ -57,7 +57,7 @@ UfController::UfController(tableManager<std::string> tm):
 	uf.ufName = "Float2";
 	ufsFloat.push_back(uf);
 
-	nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mul", 10}, {"Div", 40}};
+	nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mult", 10}, {"Div", 40}};
 }
 
 //checks if a compatible fu is available and return it
@@ -81,8 +81,10 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 	uf->instructionId = dispatchedInstruction.id;
 	if(uf->ufName.substr(0, 3) == "Int")
 		uf->execCyclesLeft = 1;
-	else
+	else{
 		uf->execCyclesLeft = nCyclesFloating[dispatchedInstruction.opName];
+	
+	}
 	uf->busy = true;
 	uf->opName = dispatchedInstruction.opName;
 	if(dispatchedInstruction.isRtype)
