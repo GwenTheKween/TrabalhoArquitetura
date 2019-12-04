@@ -161,9 +161,7 @@ bool run_code(){
 }
 
 int main(){
-
-	run_code();
-	if((instructionsLeft == false) && (instructionsExecuting == false)){ //if the program executed untill the end
+	if(run_code()){ //if the program executed untill the end
 		int x,y;
 		getmaxyx(stdscr,y,x);
 		std::string msg = "execution over, press q to exit";
