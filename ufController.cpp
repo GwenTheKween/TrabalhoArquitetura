@@ -57,7 +57,7 @@ UfController::UfController(tableManager<std::string> tm):
 	uf.ufName = "Float2";
 	ufsFloat.push_back(uf);
 
-	nCyclesFloating = {{"Add", 2}, {"Sub", 2}, {"Mult", 10}, {"Div", 40}};
+	nCyclesFloating = {{"Add.d", 2}, {"Sub.d", 2}, {"Mult.d", 10}, {"Div.d", 40}};
 }
 
 UfController::~UfController(){}
