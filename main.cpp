@@ -23,7 +23,7 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 	std::vector<std::vector<std::string> > data(lines.size(), tmp);//creates the matrix with the printed data
 
 	//creates the table itself
-;	tableManager<std::string> tm(posX, posY, columns, lines, data);
+	tableManager<std::string> tm(posX, posY, columns, lines, data);
 	*nextY = 2*lines.size() + 3; //new value of X, for the next column
 	*nextX += 1;
 	for(auto s:columns){
