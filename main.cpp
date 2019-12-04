@@ -107,7 +107,7 @@ tableManager<std::string> create_uf_controller_table(int *nextX, int *nextY){
 	return tm;
 }
 
-bool run_code(){
+bool run_code(int &clockCycle){
 	//coordinates for next table creation
 	int nextX = 0, nextY = 0;
 
@@ -130,7 +130,6 @@ bool run_code(){
 
 	DispatchController dc;
 
-	int clockCycle = 0;
 	char input='n';
 	int x,y;
 	getmaxyx(stdscr,y,x);
@@ -161,10 +160,11 @@ bool run_code(){
 }
 
 int main(){
-	if(run_code()){ //if the program executed untill the end
+	int clockCycle = 0;
+	if(run_code(clockCycle)){ //if the program executed untill the end
 		int x,y;
 		getmaxyx(stdscr,y,x);
-		std::string msg = "execution over, press q to exit";
+		std::string msg = "execution took " + std::to_string(clockCycle-2) + " cycles to finish, press q to exit";
 		sm.clear();
 		sm.mvprint_to_panel(-1,y/2,(x-msg.length())/2, "%s",msg.c_str()); //prints exit message
 		char input;

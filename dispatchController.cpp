@@ -129,10 +129,10 @@ vector<unordered_map<string, string>> DispatchController::createInstructionsMaps
 	rTypeInt["MUL"] = "Mult";
 	rTypeInt["DIV"] = "Div";
 
-	rTypeFp["ADD.D"] = "Add";
-	rTypeFp["SUB.D"] = "Sub";
-	rTypeFp["MUL.D"] = "Mult";
-	rTypeFp["DIV.D"] = "Div";
+	rTypeFp["ADD.D"] = "Add.d";
+	rTypeFp["SUB.D"] = "Sub.d";
+	rTypeFp["MUL.D"] = "Mult.d";
+	rTypeFp["DIV.D"] = "Div.d";
 	
 	iType["LW"] = "Load";
 	iType["SW"] = "Store";
