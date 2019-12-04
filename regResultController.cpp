@@ -3,8 +3,7 @@
 std::vector<std::string> regs = {"F0", "F1", "F2", "F3", "F4", "F5", "F6"};
 
 using namespace std;
-RegResController::RegResController(tableManager<string>& tm):
-	gui(tm){
+RegResController::RegResController(tableManager<string>& tm): gui(tm){
     for(size_t i = 0; i < regs.size(); i++){
         registers[regs[i]] = "NULL"; // registers available have a NULL string
     }
@@ -22,15 +21,22 @@ string RegResController::getRegister(string regName){
 }
 
 void RegResController::populateReg(string regName, string fuName){
-	
-	registers[regName] = fuName;
-	update_table();
+	// update only if 'registers' already have 'regName'
+	if(registers.find(regName) != registers.end())
+	{
+		registers[regName] = fuName;
+		update_table();
+	}
 	return;
 }
 
 void RegResController::clearReg(string regName){
-	registers[regName] = "NULL";
-	update_table();
+	// update only if 'registers' already have 'regName'
+	if(registers.find(regName) != registers.end())
+	{
+		registers[regName] = "NULL";
+		update_table();
+	}
 	return;
 }
 
