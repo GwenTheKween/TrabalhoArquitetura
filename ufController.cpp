@@ -94,7 +94,7 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 		uf->fk = dispatchedInstruction.rt;
 
 		uf->qk_next = regRes->isRegAvailable(uf->fk) ? "0" : regRes->getRegister(uf->fk);
-		uf->rk = (uf->qk == "0" ? 1 : 0);
+		uf->rk_next = (uf->qk_next == "0" ? 1 : 0);
 	}
 	else
 	{
@@ -176,9 +176,9 @@ void UfController::clearAndUpdateUf(ufLine* uf){
 	{
 		if(ufInt.ufName != uf->ufName)
 		{
-			if(ufInt.qj_next == uf->ufName)
+			if(ufInt.qj == uf->ufName)
 				ufInt.rj_next = 1;
-			if(ufInt.qk_next == uf->ufName)
+			if(ufInt.qk == uf->ufName)
 				ufInt.rk_next = 1;
 		}
 	}
@@ -186,28 +186,28 @@ void UfController::clearAndUpdateUf(ufLine* uf){
 	{
 		if(ufFloat.ufName != uf->ufName)
 		{
-			if(ufFloat.qj_next == uf->ufName)
+			if(ufFloat.qj == uf->ufName)
 				ufFloat.rj_next = 1;
-			if(ufFloat.qk_next == uf->ufName)
+			if(ufFloat.qk == uf->ufName)
 				ufFloat.rk_next = 1;
 		}
 	}
 	uf->busy = false;
-	uf->opName = uf->fi = uf->fj = uf->fk = uf->qj_next = uf->qk_next = "";
-	uf->rj_next = uf->rk_next = uf->instructionId = uf->execCyclesLeft = 0;
+	uf->opName = uf->fi = uf->fj = uf->fk = uf->qj = uf->qk = uf->qj_next = uf->qk_next = "";
+	uf->rj_next = uf->rk = uf->rj = uf->rk_next = uf->instructionId = uf->execCyclesLeft = 0;
 }
 
 //will update attributes with the values modified in the last clock cicle
 void UfController::performClockTick(){
 	int line = 0;
-	for(auto uf : ufsInt){
+	for(auto& uf : ufsInt){
 		uf.qj = uf.qj_next;
 		uf.qk = uf.qk_next;
 		uf.rj = uf.rj_next;
 		uf.rk = uf.rk_next;
 		gui.update_line(line++, uf.ufName, table_data(uf));
 	}
-	for(auto uf : ufsFloat){
+	for(auto& uf : ufsFloat){
 		uf.qj = uf.qj_next;
 		uf.qk = uf.qk_next;
 		uf.rj = uf.rj_next;
