@@ -135,11 +135,10 @@ int main(){
 	sm.mvprint_to_panel(-1,y-1,0,"press q to exit");
 	while(input != 'q'){
 		input = getch();
-		//main cycle
-		//the first thing done is to try and dispatch a new instruction
-		dc.tryToDispatchNext(&uc, &pc, &rrc, clockCycle);
 
 		pc.performClockCycle(uc, rrc, clockCycle);
+
+		dc.tryToDispatchNext(&uc, &pc, &rrc, clockCycle);
 
 		uc.performClockTick();
 		//then we update the clock cycle
