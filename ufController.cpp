@@ -172,36 +172,7 @@ string UfController::getDestReg(int instructionId){
 
 //will change UF's status and update UFs waiting to read register
 void UfController::clearAndUpdateUf(ufLine* uf){
-	/*
-	for(auto& ufInt : ufsInt)
-	{
-		if(ufInt.ufName != uf->ufName)
-		{
-			if(ufInt.qj == uf->ufName){
-				ufInt.rj_next = 1;
-				ufInt.qj_next = "0";
-			}
-			if(ufInt.qk == uf->ufName){
-				ufInt.rk_next = 1;
-				ufInt.qk_next = "0";
-			}
-		}
-	}
-	for(auto& ufFloat : ufsFloat)
-	{
-		if(ufFloat.ufName != uf->ufName)
-		{
-			if(ufFloat.qj == uf->ufName){
-				ufFloat.rj_next = 1;
-				ufFloat.qj_next = "0";
-			}
-			if(ufFloat.qk == uf->ufName){
-				ufFloat.rk_next = 1;
-				ufFloat.qk_next = "0";
-			}
-		}
-	}
-	*/
+
 	ufsCleared.push_back(uf->ufName);
 
 	uf->busy = false;
@@ -236,13 +207,17 @@ void UfController::performClockTick(){
 			if(ufInt.ufName != ufCleared){
 				if(ufInt.qj == ufCleared){
 					ufInt.rj = 1;
+					ufInt.rj_next = 1;
 					ufInt.qj = "0";
+					ufInt.qj_next = "0";
 					//applying changes to gui
 					gui.update_line(line, ufInt.ufName, table_data(ufInt));
 				}
 				if(ufInt.qk == ufCleared){
 					ufInt.rk = 1;
+					ufInt.rk_next = 1;
 					ufInt.qk = "0";
+					ufInt.qk_next = "0";
 					//applying changes to gui
 					gui.update_line(line, ufInt.ufName, table_data(ufInt));
 				}
@@ -253,13 +228,17 @@ void UfController::performClockTick(){
 			if(ufFloat.ufName != ufCleared){
 				if(ufFloat.qj == ufCleared){
 					ufFloat.rj = 1;
+					ufFloat.rj_next = 1;
 					ufFloat.qj = "0";
+					ufFloat.qj_next = "0";
 					//applying changes to gui
 					gui.update_line(line, ufFloat.ufName, table_data(ufFloat));
 				}
 				if(ufFloat.qk == ufCleared){
 					ufFloat.rk = 1;
+					ufFloat.rk_next = 1;
 					ufFloat.qk = "0";
+					ufFloat.qk_next = "0";
 					//applying changes to gui
 					gui.update_line(line, ufFloat.ufName, table_data(ufFloat));
 				}
