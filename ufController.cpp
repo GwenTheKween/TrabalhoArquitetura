@@ -176,20 +176,28 @@ void UfController::clearAndUpdateUf(ufLine* uf){
 	{
 		if(ufInt.ufName != uf->ufName)
 		{
-			if(ufInt.qj == uf->ufName)
+			if(ufInt.qj == uf->ufName){
 				ufInt.rj_next = 1;
-			if(ufInt.qk == uf->ufName)
+				ufInt.qj_next = "0";
+			}
+			if(ufInt.qk == uf->ufName){
 				ufInt.rk_next = 1;
+				ufInt.qk_next = "0";
+			}
 		}
 	}
 	for(auto& ufFloat : ufsFloat)
 	{
 		if(ufFloat.ufName != uf->ufName)
 		{
-			if(ufFloat.qj == uf->ufName)
+			if(ufFloat.qj == uf->ufName){
 				ufFloat.rj_next = 1;
-			if(ufFloat.qk == uf->ufName)
+				ufFloat.qj_next = "0";
+			}
+			if(ufFloat.qk == uf->ufName){
 				ufFloat.rk_next = 1;
+				ufFloat.qk_next = "0";
+			}
 		}
 	}
 	uf->busy = false;
