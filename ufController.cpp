@@ -43,8 +43,8 @@ UfController::UfController(tableManager<std::string> tm):
 	ufLine uf;
 	uf.ufName = "Int1";
 	uf.busy = false;
-	uf.opName = uf.fi = uf.fj = uf.fk = uf.qj = uf.qk = "";
-	uf.rj = uf.rk = uf.instructionId = uf.execCyclesLeft = 0;
+	uf.opName = uf.fi = uf.fj = uf.fk = uf.qj = uf.qk = uf.qj_next = uf.qk_next = "";
+	uf.rj = uf.rk = uf.rk_next = uf.rj_next= uf.instructionId = uf.execCyclesLeft = 0;
 
 	ufsInt.push_back(uf);
 
@@ -93,8 +93,8 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 		uf->fj = dispatchedInstruction.rs;
 		uf->fk = dispatchedInstruction.rt;
 
-		uf->qk = regRes->isRegAvailable(uf->fk) ? "0" : regRes->getRegister(uf->fk);
-		uf->rk = (uf->qk == "0" ? 1 : 0);
+		uf->qk_next = regRes->isRegAvailable(uf->fk) ? "0" : regRes->getRegister(uf->fk);
+		uf->rk_next = (uf->qk_next == "0" ? 1 : 0);
 	}
 	else
 	{
@@ -110,11 +110,11 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 			uf->fk = dispatchedInstruction.rt;
 		}
 			//not used for i-type
-			uf->qk = "0";
-			uf->rk = 1;
+			uf->qk_next = "0";
+			uf->rk_next = 1;
 	}
-	uf->qj = regRes->isRegAvailable(uf->fj) ? "0" : regRes->getRegister(uf->fj);
-	uf->rj = (uf->qj == "0" ? 1 : 0);
+	uf->qj_next = regRes->isRegAvailable(uf->fj) ? "0" : regRes->getRegister(uf->fj);
+	uf->rj_next = (uf->qj_next == "0" ? 1 : 0);
 
 }
 
@@ -122,8 +122,8 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 bool UfController::readOperands(ufLine* uf){ 
 	if(uf->rj && uf->rk)
 	{
-		uf->rj = uf->rk = 0;
-		uf->qj = uf->qk = "0";
+		uf->rj_next = uf->rk_next = 0;
+		uf->qj_next = uf->qk_next = "0";
 		return true;
 	}
 	else
@@ -176,34 +176,50 @@ void UfController::clearAndUpdateUf(ufLine* uf){
 	{
 		if(ufInt.ufName != uf->ufName)
 		{
-			if(ufInt.qj == uf->ufName)
-				ufInt.rj = 1;
-			if(ufInt.qk == uf->ufName)
-				ufInt.rk = 1;
+			if(ufInt.qj == uf->ufName){
+				ufInt.rj_next = 1;
+				ufInt.qj_next = "0";
+			}
+			if(ufInt.qk == uf->ufName){
+				ufInt.rk_next = 1;
+				ufInt.qk_next = "0";
+			}
 		}
 	}
 	for(auto& ufFloat : ufsFloat)
 	{
 		if(ufFloat.ufName != uf->ufName)
 		{
-			if(ufFloat.qj == uf->ufName)
-				ufFloat.rj = 1;
-			if(ufFloat.qk == uf->ufName)
-				ufFloat.rk = 1;
+			if(ufFloat.qj == uf->ufName){
+				ufFloat.rj_next = 1;
+				ufFloat.qj_next = "0";
+			}
+			if(ufFloat.qk == uf->ufName){
+				ufFloat.rk_next = 1;
+				ufFloat.qk_next = "0";
+			}
 		}
 	}
 	uf->busy = false;
-	uf->opName = uf->fi = uf->fj = uf->fk = uf->qj = uf->qk = "";
-	uf->rj = uf->rk = uf->instructionId = uf->execCyclesLeft = 0;
+	uf->opName = uf->fi = uf->fj = uf->fk = uf->qj = uf->qk = uf->qj_next = uf->qk_next = "";
+	uf->rj_next = uf->rk = uf->rj = uf->rk_next = uf->instructionId = uf->execCyclesLeft = 0;
 }
 
 //will update attributes with the values modified in the last clock cicle
 void UfController::performClockTick(){
 	int line = 0;
-	for(auto uf : ufsInt){
+	for(auto& uf : ufsInt){
+		uf.qj = uf.qj_next;
+		uf.qk = uf.qk_next;
+		uf.rj = uf.rj_next;
+		uf.rk = uf.rk_next;
 		gui.update_line(line++, uf.ufName, table_data(uf));
 	}
-	for(auto uf : ufsFloat){
+	for(auto& uf : ufsFloat){
+		uf.qj = uf.qj_next;
+		uf.qk = uf.qk_next;
+		uf.rj = uf.rj_next;
+		uf.rk = uf.rk_next;
 		gui.update_line(line++, uf.ufName, table_data(uf));
 	}
 }
