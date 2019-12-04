@@ -15,7 +15,10 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 		"Exec Complete",
 		"Write Result"
 	}; //column names for the final table
-	std::vector<std::string> lines = {"0","1","2","3","4"}; //line names for the final table
+	std::vector<std::string> lines; //line names for the final table
+	for(int i=0;i<MAX_PIPELINE_TABLE_SIZE;i++){
+		lines.push_back(" "); //starts with empty lines, to be filled later
+	}
 	std::vector<std::string> tmp(columns.size() - 1," ");//temporary vector, to make matrix creation more readable
 	std::vector<std::vector<std::string> > data(lines.size(), tmp);//creates the matrix with the printed data
 

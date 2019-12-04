@@ -6,6 +6,7 @@ using namespace std;
 #define READ_OP 1
 #define EXECUTION 2
 #define WRITE_BACK 3
+#define DONE 4
 
 //============================================================================
 //auxiliary function
@@ -24,7 +25,8 @@ vector<string> stages_to_vector(int stages[4]){
 //============================================================================
 
 PipelineController::PipelineController(tableManager<std::string>& tm):
-	gui(tm){}
+	gui(tm){
+	}
 
 //adds new line of intruction
 void PipelineController::dispatchInstruction(int instructionId, std::string opName, bool floating, ufLine* uf, int clockCycle){
@@ -42,13 +44,10 @@ void PipelineController::dispatchInstruction(int instructionId, std::string opNa
 	newInstruction.floating = floating;
 	newInstruction.UF = uf;
 
-	//updates the screen
-	//CHAGNE THE LINE NUMBER TO AN UNORDERED MAP THAT STORES ID AND LINE NUMBER
-	stringstream ss;
-	ss<<instructionId;
-	gui.update_line(instructionId,ss.str(),stages_to_vector(newInstruction.stage));
-
 	this->instructions.push_back(newInstruction);
+
+	//updates the screen
+	addTableEntry(instructionId);
 }
 
 //calls ufController method to read operands. Updates pipeline and window?
@@ -111,9 +110,7 @@ void PipelineController::performClockCycle(UfController& ufCon, RegResController
 		bool changed = false;
 		switch(instructions[i].currStage){
 			case DISPATCH:	//then will try to read
-				//guarantees that it wont read operands in the same clock cycle
-				if(instructions[i].stage[DISPATCH] != clockCycle) 
-					changed = tryToReadOperands(ufCon, instructions[i], clockCycle);
+				changed = tryToReadOperands(ufCon, instructions[i], clockCycle);
 				break;
 
 			case READ_OP:  //then will start execution
@@ -129,14 +126,61 @@ void PipelineController::performClockCycle(UfController& ufCon, RegResController
 					changed = tryToWriteResult(regCon, ufCon, instructions[i], clockCycle); 
 				break;
 			case WRITE_BACK:
-				//finished instruction TODO: remove from vector? remove from screen?
+				instructions[i].currStage = DONE;
+				removeTableEntry(instructions[i].instructionId);
 				break;
 		}
 		if(changed){
-			//needs to change from line number being instruction ID at some point
-			stringstream ss;
-			ss << instructions[i].instructionId;
-			gui.update_line(instructions[i].instructionId, ss.str(), stages_to_vector(instructions[i].stage));
+			updateTable(instructions[i].instructionId);
 		}
 	}
+}
+
+int PipelineController::findInstByID(int instructionId){
+	for(size_t i = 0; i<instructions.size(); i++){
+		if(instructions[i].instructionId == instructionId)
+			return i;
+	}
+	return -1;
+}
+
+void PipelineController::updateTable(int instructionId){
+	//only updates information on the given line
+	int line = getInstrLine(instructionId);
+	int index = findInstByID(instructionId);
+	stringstream ss;
+	ss << instructionLine[line];
+	sm.mvprint_to_panel(-1,30,0,"updated line %d for instr with index %d",line, index);
+	gui.update_line(line, ss.str(), stages_to_vector(instructions[index].stage));
+}
+
+void PipelineController::removeTableEntry(int instructionId){
+	int line = getInstrLine(instructionId);
+	instructionLine.erase(instructionLine.begin() + line);
+	int mx = (instructionLine.size() < MAX_PIPELINE_TABLE_SIZE) ? 
+			  instructionLine.size() : 
+			  MAX_PIPELINE_TABLE_SIZE;
+	for(;line < mx; line++){
+		updateTable(instructionLine[line]);//updates the following lines to go up
+	}
+	if(line < MAX_PIPELINE_TABLE_SIZE){
+		vector<string> v(4," ");
+		gui.update_line(line, " ", v);
+	}
+}
+
+void PipelineController::addTableEntry(int instructionId){
+	instructionLine.push_back(instructionId);
+	if(instructionLine.size() < MAX_PIPELINE_TABLE_SIZE){
+		updateTable(instructionId);
+	}
+	return;
+}
+
+int PipelineController::getInstrLine(int instructionId){
+	for(size_t index=0;index<instructionLine.size();index++){
+		if(instructionLine[index] == instructionId)
+			return index;
+	}
+	return -1;
 }

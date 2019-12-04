@@ -1,6 +1,8 @@
 #ifndef PIPELINE_CONTROLLER_H
 #define PIPELINE_CONTROLLER_H
 
+#define MAX_PIPELINE_TABLE_SIZE 5
+
 #include <vector>
 #include <string>
 #include "ufController.h"
@@ -23,6 +25,9 @@ private:
 	std::vector <pipeLine> instructions;
 
 	tableManager<std::string> gui;
+	//this vector stores the fact that the instruction whose ID is "instructionLine[index]" 
+	//is printed in the line "index" of the table
+	std::vector<int> instructionLine;
 
 public:
 	PipelineController(tableManager<std::string>& tm);
@@ -42,6 +47,19 @@ public:
 
 	//will try to perform next stage for every instruction in the pipeline
 	void performClockCycle(UfController& ufCon, RegResController& regCon, int clockCycle);
+
+	//finds the index of an instruction, given it's ID
+	int findInstByID(int instructionId);
+
+	//update the table, either a single line, or the whole table
+	void updateTable(int instructionId);
+
+	//adds or removes a line on the table
+	void removeTableEntry(int instructionId);
+	void addTableEntry(int instructionId);
+
+	//finds which line the instruction is being printed
+	int getInstrLine(int instructionId);
 };
 
 
