@@ -23,6 +23,8 @@ private:
 	std::vector<ufLine> ufsFloat;
 	// Number of cycles for each floating point instruction
 	std::unordered_map<std::string, int> nCyclesFloating;
+	// Name of cleared fu's to update again while performing clock cycle
+	std::vector<std::string> ufsCleared;
 	tableManager<std::string> gui;
 
 public:

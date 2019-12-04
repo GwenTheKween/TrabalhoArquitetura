@@ -22,6 +22,7 @@ string RegResController::getRegister(string regName){
 }
 
 void RegResController::populateReg(string regName, string fuName){
+	
 	registers[regName] = fuName;
 	update_table();
 	return;

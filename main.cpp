@@ -139,9 +139,9 @@ int main(){
 	while(input != 'q'){
 		input = getch();
 
-		pc.performClockCycle(uc, rrc, clockCycle);
-
 		dc.tryToDispatchNext(&uc, &pc, &rrc, clockCycle);
+		
+		pc.performClockCycle(uc, rrc, clockCycle);
 
 		uc.performClockTick();
 		//then we update the clock cycle

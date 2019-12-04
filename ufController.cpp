@@ -172,6 +172,7 @@ string UfController::getDestReg(int instructionId){
 
 //will change UF's status and update UFs waiting to read register
 void UfController::clearAndUpdateUf(ufLine* uf){
+	/*
 	for(auto& ufInt : ufsInt)
 	{
 		if(ufInt.ufName != uf->ufName)
@@ -200,6 +201,9 @@ void UfController::clearAndUpdateUf(ufLine* uf){
 			}
 		}
 	}
+	*/
+	ufsCleared.push_back(uf->ufName);
+
 	uf->busy = false;
 	uf->opName = uf->fi = uf->fj = uf->fk = uf->qj = uf->qk = uf->qj_next = uf->qk_next = "";
 	uf->rj_next = uf->rk = uf->rj = uf->rk_next = uf->instructionId = uf->execCyclesLeft = 0;
@@ -207,6 +211,8 @@ void UfController::clearAndUpdateUf(ufLine* uf){
 
 //will update attributes with the values modified in the last clock cicle
 void UfController::performClockTick(){
+	
+	//first updates every change
 	int line = 0;
 	for(auto& uf : ufsInt){
 		uf.qj = uf.qj_next;
@@ -222,4 +228,46 @@ void UfController::performClockTick(){
 		uf.rk = uf.rk_next;
 		gui.update_line(line++, uf.ufName, table_data(uf));
 	}
+	
+	//then try to solve read dependencies
+	for(auto ufCleared : ufsCleared){
+		line = 0;	
+		for(auto& ufInt : ufsInt){
+			if(ufInt.ufName != ufCleared){
+				if(ufInt.qj == ufCleared){
+					ufInt.rj = 1;
+					ufInt.qj = "0";
+					//applying changes to gui
+					gui.update_line(line, ufInt.ufName, table_data(ufInt));
+				}
+				if(ufInt.qk == ufCleared){
+					ufInt.rk = 1;
+					ufInt.qk = "0";
+					//applying changes to gui
+					gui.update_line(line, ufInt.ufName, table_data(ufInt));
+				}
+			}
+			line++;
+		}
+		for(auto& ufFloat : ufsFloat){
+			if(ufFloat.ufName != ufCleared){
+				if(ufFloat.qj == ufCleared){
+					ufFloat.rj = 1;
+					ufFloat.qj = "0";
+					//applying changes to gui
+					gui.update_line(line, ufFloat.ufName, table_data(ufFloat));
+				}
+				if(ufFloat.qk == ufCleared){
+					ufFloat.rk = 1;
+					ufFloat.qk = "0";
+					//applying changes to gui
+					gui.update_line(line, ufFloat.ufName, table_data(ufFloat));
+				}
+			}
+			line++;
+		}
+	}
+	ufsCleared.clear();
+	
+	
 }
