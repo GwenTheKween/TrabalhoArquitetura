@@ -98,7 +98,7 @@ void UfController::populateUf(ufLine* uf,const instruction& dispatchedInstructio
 	}
 	else
 	{
-		if(dispatchedInstruction.opName != "SW")
+		if(dispatchedInstruction.opName != "Store")
 		{
 			uf->fi = dispatchedInstruction.rt;
 			uf->fj = dispatchedInstruction.rs;
