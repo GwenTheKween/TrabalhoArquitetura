@@ -9,7 +9,7 @@ tableManager<std::string> create_pipeline_table(int* nextX, int* nextY){
 	int posX = *nextX;//position for the table
 	int posY = 0;
 	std::vector<std::string> columns = {
-		"Instruction ID",
+		"  Instruction   ",
 		"Issue Clock",
 		"Read Operands",
 		"Exec Complete",

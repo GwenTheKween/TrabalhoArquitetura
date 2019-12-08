@@ -36,7 +36,7 @@ public:
 	PipelineController(tableManager<std::string>& tm);
 
 	//adds new line of intruction
-	void dispatchInstruction(int instructionId, std::string opName, bool floating, ufLine* uf, int clockCycle);
+	void dispatchInstruction(const instruction& inst, ufLine* uf, int clockCycle);
 
 	//calls ufController method to read operands. Updates pipeline and window?
 	bool tryToReadOperands(UfController& ufCon, pipeLine &line, int clockCycle);
@@ -59,7 +59,7 @@ public:
 
 	//adds or removes a line on the table
 	void removeTableEntry(int instructionId);
-	void addTableEntry(int instructionId);
+	void addTableEntry(const instruction& inst);
 
 	//finds which line the instruction is being printed
 	int getInstrLine(int instructionId);

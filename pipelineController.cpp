@@ -32,7 +32,7 @@ PipelineController::PipelineController(tableManager<std::string>& tm):
 	}
 
 //adds new line of intruction
-void PipelineController::dispatchInstruction(const instruction& inst, bool floating, ufLine* uf, int clockCycle){
+void PipelineController::dispatchInstruction(const instruction& inst, ufLine* uf, int clockCycle){
 	
 	//copying values to new entry
 	pipeLine newInstruction;
@@ -44,7 +44,7 @@ void PipelineController::dispatchInstruction(const instruction& inst, bool float
 	newInstruction.stage[EXECUTION] = -1;
 	newInstruction.stage[WRITE_BACK] = -1;
 	newInstruction.finishedExec = false;
-	newInstruction.floating = floating;
+	newInstruction.floating = inst.useFp;
 	newInstruction.UF = uf;
 
 	this->instructions.push_back(newInstruction);
@@ -159,11 +159,13 @@ void PipelineController::updateTable(int instructionId){
 	//only updates information on the given line
 	int line = getInstrLine(instructionId);
 	int index = findInstByID(instructionId);
-	std::string r1 = instructionLine[line].isRtype ? instructionLine[line].rd : instructionLine[line].rs;
-	stringstream ss;
-	ss << instructionLine[line].opName << " " << instructionLine[line].rd << " "
-	   << instructionLine[line].rs << " " << instructionLine[line].rt;
-	gui.update_line(line, ss.str(), stages_to_vector(instructions[index].stage));
+	std::string r1 = instructionLine[line].isRtype ? instructionLine[line].rd : instructionLine[line].rt;
+	std::string r2 = instructionLine[line].rs;
+	std::string r3 = instructionLine[line].isRtype ? instructionLine[line].rt : std::to_string(instructionLine[line].immed);
+	if (instructionLine[line].opName == "Store")
+		std::swap(r1, r2);
+	std::string instructionStr(instructionLine[line].opName + " " + r1 + " " + r2 + " " + r3);
+	gui.update_line(line, instructionStr, stages_to_vector(instructions[index].stage));
 }
 
 void PipelineController::removeTableEntry(int instructionId){
@@ -173,7 +175,7 @@ void PipelineController::removeTableEntry(int instructionId){
 			  instructionLine.size() : 
 			  MAX_PIPELINE_TABLE_SIZE;
 	for(;line < mx; line++){
-		updateTable(instructionLine[line]);//updates the following lines to go up
+		updateTable(instructionLine[line].id);//updates the following lines to go up
 	}
 	if(line < MAX_PIPELINE_TABLE_SIZE){
 		vector<string> v(4," ");
@@ -191,7 +193,7 @@ void PipelineController::addTableEntry(const instruction& inst){
 
 int PipelineController::getInstrLine(int instructionId){
 	for(size_t index=0;index<instructionLine.size();index++){
-		if(instructionLine[index] == instructionId)
+		if(instructionLine[index].id == instructionId)
 			return index;
 	}
 	return -1;
