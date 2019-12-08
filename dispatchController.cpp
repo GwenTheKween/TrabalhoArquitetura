@@ -88,7 +88,7 @@ int DispatchController::tryToDispatchNext(UfController* ufCon, PipelineControlle
 					regCon->populateReg(nextInstruction.rd, ufReturned->ufName);
 
 					//finally, send dispatched instruction to the pipeline
-					pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName,nextInstruction.useFp, ufReturned, clockCycle);
+					pipe->dispatchInstruction(nextInstruction.id, nextInstruction.opName, nextInstruction.useFp, ufReturned, clockCycle);
 					instructionQueue.pop();
 
 					return nextInstruction.id;

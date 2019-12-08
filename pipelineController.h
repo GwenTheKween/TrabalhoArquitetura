@@ -8,6 +8,7 @@
 #include "ufController.h"
 #include "regResultController.h"
 #include "tableManager.h"
+#include "instructionStruct.h"
 
 extern bool instructionsExecuting;
 
@@ -29,7 +30,7 @@ private:
 	tableManager<std::string> gui;
 	//this vector stores the fact that the instruction whose ID is "instructionLine[index]" 
 	//is printed in the line "index" of the table
-	std::vector<int> instructionLine;
+	std::vector<instruction> instructionLine;
 
 public:
 	PipelineController(tableManager<std::string>& tm);

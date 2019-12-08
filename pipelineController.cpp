@@ -1,3 +1,4 @@
+#include "instructionStruct.h"
 #include "pipelineController.h"
 #include <iostream>
 using namespace std;
@@ -31,12 +32,12 @@ PipelineController::PipelineController(tableManager<std::string>& tm):
 	}
 
 //adds new line of intruction
-void PipelineController::dispatchInstruction(int instructionId, std::string opName, bool floating, ufLine* uf, int clockCycle){
+void PipelineController::dispatchInstruction(const instruction& inst, bool floating, ufLine* uf, int clockCycle){
 	
 	//copying values to new entry
 	pipeLine newInstruction;
-	newInstruction.instructionId = instructionId;
-	newInstruction.opName = opName;
+	newInstruction.instructionId = inst.id;
+	newInstruction.opName = inst.opName;
 	newInstruction.currStage = DISPATCH;
 	newInstruction.stage[DISPATCH] = clockCycle;
 	newInstruction.stage[READ_OP] = -1;
@@ -52,7 +53,7 @@ void PipelineController::dispatchInstruction(int instructionId, std::string opNa
 	instructionsExecuting = true;
 
 	//updates the screen
-	addTableEntry(instructionId);
+	addTableEntry(inst);
 }
 
 //calls ufController method to read operands. Updates pipeline and window?
@@ -158,8 +159,10 @@ void PipelineController::updateTable(int instructionId){
 	//only updates information on the given line
 	int line = getInstrLine(instructionId);
 	int index = findInstByID(instructionId);
+	std::string r1 = instructionLine[line].isRtype ? instructionLine[line].rd : instructionLine[line].rs;
 	stringstream ss;
-	ss << instructionLine[line];
+	ss << instructionLine[line].opName << " " << instructionLine[line].rd << " "
+	   << instructionLine[line].rs << " " << instructionLine[line].rt;
 	gui.update_line(line, ss.str(), stages_to_vector(instructions[index].stage));
 }
 
@@ -178,10 +181,10 @@ void PipelineController::removeTableEntry(int instructionId){
 	}
 }
 
-void PipelineController::addTableEntry(int instructionId){
-	instructionLine.push_back(instructionId);
+void PipelineController::addTableEntry(const instruction& inst){
+	instructionLine.push_back(inst);
 	if(instructionLine.size() < MAX_PIPELINE_TABLE_SIZE){
-		updateTable(instructionId);
+		updateTable(inst.id);
 	}
 	return;
 }
